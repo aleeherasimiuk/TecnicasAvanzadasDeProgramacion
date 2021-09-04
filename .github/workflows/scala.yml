@@ -1,0 +1,35 @@
+name: Continuous Integration for Scala
+on: [push,pull_request]
+
+jobs:
+  build:
+    name: Build and Test
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        scala: [2.13.0]
+        java: [adopt@1.8]
+    
+    defaults:
+      run:
+        working-directory: scala
+    
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+      - name: Checkout current branch (full)
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java and Scala
+        uses: olafurpg/setup-scala@v10
+        with:
+          java-version: ${{ matrix.java }}
+
+      - name: Cache scala dependencies
+        uses: coursier/cache-action@v6
+
+      - name: Run tests
+        shell: bash
+        run: sbt ++${{ matrix.scala }} test
