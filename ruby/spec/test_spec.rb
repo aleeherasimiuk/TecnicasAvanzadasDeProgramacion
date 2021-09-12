@@ -11,5 +11,9 @@ describe Prueba do
     it 'debería pasar este test también' do
       expect(2 + 2).to eq 4
     end
+
+    it 'debería pasar este test también 2' do
+      expect(Prueba.cuatro).to eq(4)
+    end
   end
 end
