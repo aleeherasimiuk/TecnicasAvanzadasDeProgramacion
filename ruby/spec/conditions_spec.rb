@@ -1,5 +1,0 @@
-describe "Condiciones" do
-
-  
-
-end

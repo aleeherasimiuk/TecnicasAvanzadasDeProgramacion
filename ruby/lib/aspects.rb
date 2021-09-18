@@ -1,9 +1,10 @@
-class Aspects
+module Aspects
 
   def self.on(*objetos, &bloque)
     validate_arguments *objetos
   end
 
+  private
   def self.validate_arguments(*objetos)
     raise ArgumentError.new "Origen vacío" if objetos.empty?
   end
@@ -20,6 +21,9 @@ class Aspects
 #   end  
   
   
+end
+
+module Aspect
 end
 
 
