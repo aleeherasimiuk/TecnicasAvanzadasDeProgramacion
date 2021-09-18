@@ -30,31 +30,50 @@ describe "Aspects Test" do
 
     it "should include LogicModule on the origin" do
       
-      Aspects.on DummyClass do
+      Aspects.on dummyObject do
         #algo
       end
-      expect(DummyClass.singleton_class.included_modules.include? LogicModule).to be true
+      expect(dummyObject.singleton_class.included_modules.include? LogicModule).to be true
     end
 
+
     it "should include LogicModule on each origin" do
+
+      class DummyClass2
+      end
+
+      module DummyModule
+      end
       
-      Aspects.on DummyClass, DummyModule, dummyObject do
+      Aspects.on DummyClass2, DummyModule, dummyObject do
         #algo
       end
 
-      expect(DummyClass.singleton_class.included_modules.include? LogicModule).to be true
+      expect(DummyClass2.singleton_class.included_modules.include? LogicModule).to be true
       expect(DummyModule.singleton_class.included_modules.include? LogicModule).to be true
       expect(dummyObject.singleton_class.included_modules.include? LogicModule).to be true
     end
 
     it "should not include LogicModule" do
 
-      Aspects.on DummyClass, dummyObject do
+      class DummyClass3
+      end
+
+      module DummyModule2
+      end
+
+      Aspects.on DummyClass3, dummyObject do
         #algo
       end
 
-      expect(DummyModule.singleton_class.included_modules.include? LogicModule).to be false
+      expect(DummyModule2.singleton_class.included_modules.include? LogicModule).to be false
     end
+
+    it "should not include LogicModule34" do
+
+      expect(dummyObject.singleton_class.included_modules.include? LogicModule).to be false
+    end
+
   end
 end
 
