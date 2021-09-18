@@ -1,12 +1,13 @@
 module Aspects
 
   def self.on(*objetos, &bloque)
-    validate_arguments *objetos
+    validate_arguments(*objetos,&bloque)
+    objetos.each { |obj| obj.extend(LogicModule)}
   end
 
   private
   def self.validate_arguments(*objetos)
-    raise ArgumentError.new "Origen vacío" if objetos.empty?
+    raise ArgumentError.new "Origen vacío" if objetos.empty? or !block_given?
   end
   
   
@@ -23,10 +24,8 @@ module Aspects
   
 end
 
-module Aspect
+module LogicModule #cambio nombre para que no sea confuso
 end
-
-
 
 
 
