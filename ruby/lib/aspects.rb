@@ -26,6 +26,12 @@ module Aspects
     return classes_and_modules, objects, regexps
   end
 
+  def self.modules_by_regex regex
+    
+    
+
+  end
+
 end
 
 module LogicModule
