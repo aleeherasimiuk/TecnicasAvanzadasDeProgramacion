@@ -1,30 +1,30 @@
 module Aspects
 
-  def self.on(*objetos, &bloque)
-    validate_arguments(*objetos,&bloque)
-    objetos.each { |obj| obj.extend(LogicModule)}
+  def self.on(*args, &block)
+    validate_arguments(*args,&block)
+
+    args.singleton_class.define_method :filter_by, Proc.new { |type| 
+      self.select { |it| it.is_a?(type) } 
+    }
+    
+    objects = args.filter_by Object
+    classes = args.filter_by Class
+    modules = args.filter_by Module
+    regexps = args.filter_by Regexp
+    
+    objects.each { |it| it.singleton_class.include(LogicModule)}
+    classes.each { |it| it.include(LogicModule)}
+    modules.each { |it| it.include(LogicModule)}
+
   end
 
   private
-  def self.validate_arguments(*objetos)
-    raise ArgumentError.new "Origen vacío" if objetos.empty? or !block_given?
+  def self.validate_arguments(*args)
+    raise ArgumentError.new "Origen vacío" if args.empty? or !block_given?
   end
-  
-  
-#   def evaluar_tipo(objeto,&bloque)     #arriba un each a cada objeto que llame a evaluar_tipo
-#     if(objeto.is_a?(Class))
-#         objeto.class_eval(&bloque)
-#     elseif(objeto.is_a?(Module))       #Hay type test pero esta seria la idea, se arreglaria redefiniendo los metodos
-#         objeto.module_eval(&bloque)     #en las autoclases
-#     else
-#         objeto.instance_eval(&bloque)
-#     end
-#   end  
-  
-  
 end
 
-module LogicModule #cambio nombre para que no sea confuso
+module LogicModule
 end
 
 
