@@ -41,10 +41,11 @@ describe "Aspects Test" do
       
       Aspects.on(DummyClass, DummyModule, dummyObject) {}
 
-      expect(DummyClass.included_modules.include? LogicModule).to be true
-      expect(DummyModule.included_modules.include? LogicModule).to be true
+      expect(DummyClass.singleton_class.included_modules.include? LogicModule).to be true
+      expect(DummyModule.singleton_class.included_modules.include? LogicModule).to be true
       expect(dummyObject.singleton_class.included_modules.include? LogicModule).to be true
     end
+
   end
 end
 

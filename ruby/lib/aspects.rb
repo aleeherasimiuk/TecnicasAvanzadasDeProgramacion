@@ -3,16 +3,10 @@ module Aspects
   def self.on(*args, &block)
     validate_arguments(*args,&block)
     
-    regexps = filter_by(Regexp, *args)
-    classes = filter_by(Class,  *args)
-
-    # Esto falla porque las clases también son objetos, las regexp tambień.
-    modules = filter_by(Module, *args)
-    objects = filter_by(Object, *args)
+    classes_and_modules, objects, regex = filter(args)
     
     objects.each { |it| it.singleton_class.include(LogicModule)}
-    classes.each { |it| it.include(LogicModule)}
-    modules.each { |it| it.include(LogicModule)}
+    classes_and_modules.each { |it| it.extend(LogicModule)}
 
   end
 
@@ -22,9 +16,16 @@ module Aspects
   end
 
 
-  def self.filter_by(type, *args)
-    args.select { |it| it.is_a?(type) }
+  def self.filter(args)
+    regexps = args.select { |it| it.is_a?(Regexp) }
+
+    classes_and_modules = args.select { |it| it.is_a?(Module) }
+
+    objects = args.reject {|it| classes_and_modules.union(regexps).include?(it) }
+
+    return classes_and_modules, objects, regexps
   end
+
 end
 
 module LogicModule

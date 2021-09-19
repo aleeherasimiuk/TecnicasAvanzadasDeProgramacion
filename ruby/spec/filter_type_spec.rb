@@ -1,7 +1,7 @@
 describe "Aspects Test" do
 
-  let(:filter_by){
-    Aspects.method(:filter_by)
+  let(:filter){
+    Aspects.method(:filter)
   }
 
   let(:origins){
@@ -24,20 +24,23 @@ describe "Aspects Test" do
 
   context "#filter_by" do
 
-    it "should return 2 classes" do
-      expect(filter_by.call(Class, *origins).size).to eq 2
+    it "should return 2 classes and 2 modules" do
+
+      classes_and_modules, _, _ = filter.call(origins)
+
+      expect(classes_and_modules.size).to eq 4
     end
 
-    xit "should return 1 object" do
-      expect(filter_by.call(Object, *origins).size).to eq 1
-    end
-
-    xit "should return 2 modules" do
-      expect(filter_by.call(Module, *origins).size).to eq 2
+    it "should return 1 object" do
+      _, objects, _ = filter.call(origins)
+      expect(objects.size).to eq 1
     end
 
     it "should return 1 regex" do
-      expect(filter_by.call(Regexp, *origins).size).to eq 1
+
+      _, _, regex = filter.call(origins)
+
+      expect(regex.size).to eq 1
     end
   end
 
