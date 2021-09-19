@@ -2,15 +2,13 @@ module Aspects
 
   def self.on(*args, &block)
     validate_arguments(*args,&block)
-
-    args.singleton_class.define_method :filter_by, Proc.new { |type| 
-      self.select { |it| it.is_a?(type) } 
-    }
     
-    objects = args.filter_by Object
-    classes = args.filter_by Class
-    modules = args.filter_by Module
-    regexps = args.filter_by Regexp
+    regexps = filter_by(Regexp, *args)
+    classes = filter_by(Class,  *args)
+
+    # Esto falla porque las clases también son objetos, las regexp tambień.
+    modules = filter_by(Module, *args)
+    objects = filter_by(Object, *args)
     
     objects.each { |it| it.singleton_class.include(LogicModule)}
     classes.each { |it| it.include(LogicModule)}
@@ -21,6 +19,11 @@ module Aspects
   private
   def self.validate_arguments(*args)
     raise ArgumentError.new "Origen vacío" if args.empty? or !block_given?
+  end
+
+
+  def self.filter_by(type, *args)
+    args.select { |it| it.is_a?(type) }
   end
 end
 
