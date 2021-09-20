@@ -4,7 +4,7 @@ describe "Aspects Test" do
     Aspects.method(:modules_by_regex)
   }
 
-  class Foo
+  class Fooma
   end
 
   module Bar
@@ -12,16 +12,21 @@ describe "Aspects Test" do
 
   context "#modules_by_regex" do
 
-    xit "should return Foo" do
-      expect(modules_by_regex.call(/^Foo$/)).to eq([Foo])
+    it "test classes and modules are on the system" do
+      expect(SystemGetter.get_all(Class).include? Fooma).to be true
+      expect(SystemGetter.get_all(Module).include? Bar).to be true
     end
 
-    xit "should return Bar" do
-      expect(modules_by_regex.call(/^Bar$/)).to eq([Bar])
+    it "should return Foo" do
+      expect(modules_by_regex.call([/^Foo.*/])).to eq([Fooma])   #Lo cambie a Fooma para hacer el test del enunciado (todas las clases que empiezan con Foo)
     end
 
-    xit "should return Bar and Foo" do
-      expect(modules_by_regex.call(/^(Bar|Foo)$/)).to eq([Bar, Foo])
+    it "should return Bar" do
+      expect(modules_by_regex.call([/.*Bar/])).to eq([Bar])
+    end
+
+    it "should return Bar and Foo" do
+      expect(modules_by_regex.call([/^(Bar|Fooma)$/])).to eq([Bar, Fooma])
     end
 
   end
