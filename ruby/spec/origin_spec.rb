@@ -1,27 +1,34 @@
-describe "Aspects Test" do
-  
-  context "instances" do
+describe 'Aspects Test' do
+  context 'instances' do
+    let(:dummyInstance) { EmptyClass.new }
 
-    it "should not respond to any method defined in module" do
-      
-      class EmptyClass
-      end
+    subject do
+      Aspects.on(EmptyClass) {}
+    end
 
-      expect(EmptyClass.singleton_class.included_modules.include? LogicModule).to be false
-      
+    before do
       LogicModule.define_method :test_method do
-        "test"
+        'test'
       end
+    end
 
-      Aspects.on(EmptyClass) do
-      end
+    it 'should not respond to any method defined in module' do
+      expect(EmptyClass.singleton_class.included_modules.include? LogicModule).to be false
+
+      subject
 
       expect(EmptyClass.singleton_class.included_modules.include? LogicModule).to be true
-
-      dummyInstance = EmptyClass.new
       expect(dummyInstance.respond_to?(:test_method)).to be false
     end
 
-  end
+    it 'should respond to the test method for the singleton class of EmptyClass' do
+      subject
+      expect(EmptyClass.respond_to?(:test_method)).to be true
+    end
 
+    it 'should return the expected result for EmptyClass#test_method' do
+      subject
+      expect(EmptyClass.test_method).to eq('test')
+    end
+  end
 end
