@@ -1,4 +1,5 @@
 describe "Aspects Test" do
+
   context "#on" do
     let(:test_object) { Object.new }
 
@@ -20,6 +21,10 @@ describe "Aspects Test" do
 
     it "should not be able to allow no block" do
       expect { Aspects.on Object }.to raise_error(ArgumentError)
+    end
+
+    it "should not be able to allow no parameters nor block" do
+      expect { Aspects.on }.to raise_error(ArgumentError)
     end
 
     context 'check origin of LogicModule' do
