@@ -1,13 +1,15 @@
 describe "Aspects Test" do
-
   context "#on" do
+    let(:test_object) { Object.new }
+
+    subject { Aspects.on(test_object) {} }
 
     it "should exist" do
       expect(Aspects.respond_to?(:on)).to be true
     end
 
     it "should pass when valid object and block are given" do
-      Aspects.on(Object.new){}
+      subject
     end
 
     it "should not be able to allow no parameters" do
@@ -17,35 +19,39 @@ describe "Aspects Test" do
     end
 
     it "should not be able to allow no block" do
-      expect do
-        Aspects.on Object
-      end.to raise_error(ArgumentError)
+      expect { Aspects.on Object }.to raise_error(ArgumentError)
     end
 
-    it "should include LogicModule on the origin object" do
-      a = Object.new
-      Aspects.on(a){}
-      expect(a.singleton_class.included_modules.include? LogicModule).to be true
-    end
+    context 'check origin of LogicModule' do
+      let(:dummyObject) { DummyClass.new }
 
+      context 'when some classes and modules use the Aspects framework' do
+        subject do
+          Aspects.on(DummyClass, DummyModule, dummyObject) {}
+        end
 
-    it "should include LogicModule on each origin" do
+        it 'should not include the affected objects before any positive test' do
+          expect(klass_includes_logic_module?(DummyModule)).to be false
+          expect(klass_includes_logic_module?(DummyClass)).to be false
+          expect(klass_includes_logic_module?(dummyObject)).to be false
+        end
 
-      class DummyClass
+        it 'should include the module on the DummyClass' do
+          subject
+          expect(klass_includes_logic_module?(DummyClass)).to be true
+        end
+
+        it 'should include the module on the DummyModule' do
+          subject
+          expect(klass_includes_logic_module?(DummyModule)).to be true
+        end
+
+        it "should include LogicModule on each origin" do
+          subject
+          expect(klass_includes_logic_module?(dummyObject)).to be true
+        end
       end
-
-      module DummyModule
-      end
-
-      dummyObject = DummyClass.new
-      
-      Aspects.on(DummyClass, DummyModule, dummyObject) {}
-
-      expect(DummyClass.singleton_class.included_modules.include? LogicModule).to be true
-      expect(DummyModule.singleton_class.included_modules.include? LogicModule).to be true
-      expect(dummyObject.singleton_class.included_modules.include? LogicModule).to be true
     end
-
   end
 end
 

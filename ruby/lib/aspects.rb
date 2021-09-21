@@ -1,5 +1,4 @@
 module Aspects
-
   def self.on(*args, &block)
     validate_arguments(*args,&block)
     
@@ -9,14 +8,13 @@ module Aspects
     final_class_modules = classes_and_modules | matched_modules_classes
     objects.each { |it| it.singleton_class.include(LogicModule)}
     final_class_modules.each { |it| it.extend(LogicModule)}
-
   end
 
   private
-  def self.validate_arguments(*args)
-    raise ArgumentError.new "Origen vacío" if args.empty? or !block_given?
-  end
 
+  def self.validate_arguments(*args)
+    raise ArgumentError.new 'Origen vacío' if args.empty? || !block_given?
+  end
 
   def self.filter(args)
     regexps = args.select { |it| it.is_a?(Regexp) }
@@ -39,7 +37,6 @@ module Aspects
     matched_modules = SystemGetter.get_all(Module).select { |it| regexp.match(it.to_s)}
     (matched_modules | matched_classes).flatten.uniq              #Este no se repitan entre modulos y clases ya que hay veces que pegan en las dos
   end
-
 end
 
 module LogicModule

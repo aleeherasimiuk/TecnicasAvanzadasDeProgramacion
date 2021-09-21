@@ -1,7 +1,5 @@
 class SystemGetter
   def self.get_all(type)
-    array = []
-    ObjectSpace.each_object(type) { |it| array.push(it)}
-    array
+    ObjectSpace.each_object(type).to_a
   end
 end
