@@ -2,7 +2,6 @@ require 'rspec'
 require 'pry'
 
 require_relative '../lib/aspects'
-require_relative '../lib/system_getter'
 
 #Helpers
 require_relative 'aspect_helpers'

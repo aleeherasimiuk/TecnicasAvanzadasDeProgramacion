@@ -1,41 +1,46 @@
 module Aspects
   def self.on(*args, &block)
-    validate_arguments(*args,&block)
-    
-    classes_and_modules, objects, regexps = filter(args)
+    classes_and_modules, objects, regexps = filter args
     matched_modules_classes = modules_by_regex regexps
 
-    final_class_modules = classes_and_modules | matched_modules_classes
+    final_class_modules = classes_and_modules.union matched_modules_classes
+    validate_arguments(final_class_modules | objects, &block)
+
     objects.each { |it| it.singleton_class.include(LogicModule)}
     final_class_modules.each { |it| it.extend(LogicModule)}
   end
 
   private
 
-  def self.validate_arguments(*args)
-    raise ArgumentError.new 'Origen vacío' if args.empty? || !block_given?
+  def self.validate_arguments(origins)
+    raise ArgumentError.new 'Origen vacío' if origins.empty? || !block_given?
   end
 
   def self.filter(args)
-    regexps = args.select { |it| it.is_a?(Regexp) }
+    regexps = get_by_type args, Regexp
 
-    classes_and_modules = args.select { |it| it.is_a?(Module) }
+    classes_and_modules = get_by_type args, Module
 
     objects = args.reject {|it| classes_and_modules.union(regexps).include?(it) }
 
     return classes_and_modules, objects, regexps
   end
 
+  def self.get_by_type list, type
+    list.select { |it| it.is_a?(type) }
+  end
+
   def self.modules_by_regex regexps
-    matched_modules_classes = []
-    regexps.each { |it| matched_modules_classes << evaluate_matches(it)}
-    matched_modules_classes.flatten.uniq          # Este uniq es porque puede ser que una clase entre en varias Reg. Exp.
+    regexps
+      .flat_map { |regex| evaluate_matches regex }
+      .uniq    # Este uniq es porque puede ser que una clase entre en varias Reg. Exp.
   end
 
   def self.evaluate_matches regexp
-    matched_classes = SystemGetter.get_all(Class).select { |it| regexp.match(it.to_s)}
-    matched_modules = SystemGetter.get_all(Module).select { |it| regexp.match(it.to_s)}
-    (matched_modules | matched_classes).flatten.uniq              #Este no se repitan entre modulos y clases ya que hay veces que pegan en las dos
+    Module.constants
+      .select { |sym| regexp.match?(sym.to_s) }
+      .map { |sym| Kernel.const_get sym } # pasar de symbol a Clase/Modulo
+      .reject { |matched| [Object, BasicObject, Kernel, NilClass, Class].include? matched }
   end
 end
 
