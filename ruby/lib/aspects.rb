@@ -40,16 +40,6 @@ module Aspects
     Module.constants
       .select { |sym| regexp.match?(sym.to_s) }
       .map { |sym| Kernel.const_get sym } # pasar de symbol a Clase/Modulo
-      .reject { |matched| [Object, BasicObject, Kernel, NilClass, Class].include? matched }
+      .reject { |matched| [Object, BasicObject, Kernel, NilClass, Class, Module].include? matched }
   end
 end
-
-module LogicModule
-end
-
-
-
-
-
-
-
