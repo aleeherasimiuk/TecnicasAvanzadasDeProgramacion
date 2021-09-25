@@ -10,9 +10,12 @@ module Aspects
       it.singleton_class.include(LogicModule)
       it.instance_eval &block
     end
+
     final_class_modules.each { |it| it.extend(LogicModule)}
+
     modules = get_by_type final_class_modules, Module
     modules.each { |it| it.module_eval(&block) }
+
     classes = get_by_type final_class_modules, Class    # Se podria hacer mas polimorfico maybe (?
     classes.each { |it| it.class_eval(&block) }
   end

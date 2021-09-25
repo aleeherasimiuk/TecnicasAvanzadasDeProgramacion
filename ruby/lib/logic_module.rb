@@ -4,7 +4,7 @@ module LogicModule
     methods = get_methods
     filtered_methods = methods.select do |method|
       conditions.all? do |cond|
-        cond.call(get_unbound_method method)
+        cond.validate(get_unbound_method method)
       end
     end
   end
@@ -17,9 +17,9 @@ module LogicModule
 
   def get_methods
     if is_a? Module
-      self.instance_methods false
+      self.instance_methods
     else
-      self.methods false
+      self.methods
     end
   end
 
