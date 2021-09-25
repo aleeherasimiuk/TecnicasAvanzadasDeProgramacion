@@ -1,5 +1,7 @@
 describe "Where tests" do
   let(:dummy_instance) { ClassWithMethods.new }
+  let(:blah_regex) { /blah/ }
+
   subject do
     Aspects.on(ClassWithMethods, dummy_instance) {}
   end
@@ -10,6 +12,11 @@ describe "Where tests" do
   end
 
   context "Name condition" do
+    it "should not return any method when a non matching regex is passed" do
+      subject
+      expect(ClassWithMethods.where name(blah_regex)).to be_empty
+    end
+
     it "should return method1 on name condition" do
       subject
       expect(ClassWithMethods.where name(/method1/)).to include(:method1)
@@ -28,6 +35,13 @@ describe "Where tests" do
   end
 
   context "Parameters condition" do
+    let(:number_regex) { /p[1-9]/ }
+
+    it "should not return any method another arity number is passed" do
+      subject
+      expect(ClassWithMethods.where has_parameters(50)).to be_empty
+    end
+
     it "should verify a certain amount of parameters" do
       subject
       expect(ClassWithMethods.where has_parameters(3)).to include(:method1)
@@ -40,13 +54,13 @@ describe "Where tests" do
 
     it "should return method1 when querying for 3 params that starts with p and ends with number" do
       subject
-      expect(ClassWithMethods.where has_parameters(3, /p[1-9]/)).to include(:method1)
+      expect(ClassWithMethods.where has_parameters(3, number_regex)).to include(:method1)
     end
 
     it "should not return method2 and mehthod3 when querying for 3 params that starts with p and ends with number" do
       subject
-      expect(ClassWithMethods.where has_parameters(3, /p[1-9]/)).not_to include(:method2)
-      expect(ClassWithMethods.where has_parameters(3, /p[1-9]/)).not_to include(:method3)
+      expect(ClassWithMethods.where has_parameters(3, number_regex)).not_to include(:method2)
+      expect(ClassWithMethods.where has_parameters(3, number_regex)).not_to include(:method3)
     end
 
     it "should return method1 when querying for 3 mandatory params" do
@@ -123,6 +137,4 @@ describe "Where tests" do
       expect(ClassWithMethods.where neg(has_parameters(4, :mandatory))).to include(:method1, :method3, :method4, :method5)
     end
   end
-
 end
-
