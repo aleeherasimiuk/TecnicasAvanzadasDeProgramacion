@@ -19,7 +19,7 @@ describe "Aspects Test" do
     end
 
     it "should return Bar and Foo" do
-      expect(modules_by_regex.call(foo_bar_regex)).to eq([Fooma, Bar])
+      expect(modules_by_regex.call(foo_bar_regex)).to include(Fooma, Bar)
     end
 
     it "should not return Objects like Kernel or BasicObject" do

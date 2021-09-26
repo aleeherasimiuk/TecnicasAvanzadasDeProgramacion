@@ -6,8 +6,18 @@ module Aspects
     final_class_modules = classes_and_modules.union matched_modules_classes
     validate_arguments(final_class_modules | objects, &block)
 
-    objects.each { |it| it.singleton_class.include(LogicModule)}
+    objects.each do |it|
+      it.singleton_class.include(LogicModule)
+      it.instance_eval &block
+    end
+
     final_class_modules.each { |it| it.extend(LogicModule)}
+
+    modules = get_by_type final_class_modules, Module
+    modules.each { |it| it.module_eval(&block) }
+
+    classes = get_by_type final_class_modules, Class    # Se podria hacer mas polimorfico maybe (?
+    classes.each { |it| it.class_eval(&block) }
   end
 
   private
@@ -26,30 +36,20 @@ module Aspects
     return classes_and_modules, objects, regexps
   end
 
-  def self.get_by_type list, type
+  def self.get_by_type(list, type)
     list.select { |it| it.is_a?(type) }
   end
 
-  def self.modules_by_regex regexps
+  def self.modules_by_regex(regexps)
     regexps
       .flat_map { |regex| evaluate_matches regex }
-      .uniq    # Este uniq es porque puede ser que una clase entre en varias Reg. Exp.
+      .uniq # Este uniq es porque puede ser que una clase entre en varias Reg. Exp.
   end
 
-  def self.evaluate_matches regexp
+  def self.evaluate_matches(regexp)
     Module.constants
-      .select { |sym| regexp.match?(sym.to_s) }
-      .map { |sym| Kernel.const_get sym } # pasar de symbol a Clase/Modulo
-      .reject { |matched| [Object, BasicObject, Kernel, NilClass, Class].include? matched }
+          .select { |sym| regexp.match?(sym.to_s) }
+          .map { |sym| Kernel.const_get sym } # pasar de symbol a Clase/Modulo
+          .reject { |matched| [Object, BasicObject, Kernel, NilClass, Class, Module].include? matched }
   end
 end
-
-module LogicModule
-end
-
-
-
-
-
-
-
