@@ -1,5 +1,7 @@
 module LogicModule
   def where(*conditions)
+    # TODO: [IDEA] - add a temp inst var to have easier expectations
+    # @__temp_filtered_methods__ = []
     validate_conditions(conditions)
     methods = get_methods
     filtered_methods = methods.select do |method|
@@ -7,6 +9,8 @@ module LogicModule
         cond.validate(get_unbound_method method)
       end
     end
+    # @__temp_filtered_methods__ = filtered_methods
+    # filtered_methods
   end
 
   private
@@ -30,10 +34,4 @@ module LogicModule
       self.method method
     end
   end
-
-  
 end
-
-
-
-

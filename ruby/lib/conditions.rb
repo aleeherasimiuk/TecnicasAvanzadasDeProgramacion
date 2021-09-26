@@ -1,16 +1,16 @@
 # Conditions
 class BaseCondition
-  def validate
+  def validate(method)
     raise NotImplementedError.new
   end
 end
 
 class NameCondition < BaseCondition
-  def initialize regex
+  def initialize(regex)
     @regex = regex
   end
 
-  def validate method
+  def validate(method)
     @regex.match(method.original_name.to_s)
   end
 end
@@ -21,7 +21,7 @@ class ParametersCondition < BaseCondition
     @check_block = block
   end
 
-  def validate method
+  def validate(method)
     filtered = method.parameters.select do |param|
       @check_block.call(param)
     end
@@ -30,41 +30,48 @@ class ParametersCondition < BaseCondition
   end
 end
 
+class ArityCondition < BaseCondition
+  def initialize(arity_size)
+    @arity_size = arity_size
+  end
+
+  def validate(method)
+    method.parameters.size == @arity_size
+  end
+end
+
 class NegCondition < BaseCondition
-  def initialize (condition)
+  def initialize(condition)
     @condition = condition
   end
 
-  def validate method
+  def validate(method)
     !@condition.validate(method)
   end
 end
 
-
-def name regex
+def name(regex)
   NameCondition.new regex
 end
 
-def has_parameters count, extra = nil
-  ParametersCondition.new count,
-    case extra
-      when Regexp
-        proc { |param| extra.match(param[1]) }
-      when :optional
-        proc { |param| param.first == :opt }
-      when :mandatory
-        proc { |param| param.first == :req }
-      else
-        proc { true }
-      end
+def has_parameters(count, extra = nil)
+  #TODO: [IDEA] - add validate_type_extra!(extra) method to check types
+
+  dispatch = {
+    Regexp: proc { |param| extra.match(param[1]) },
+    optional: proc { |param| param.first == :opt },
+    mandatory: proc { |param| param.first == :req }
+  }
+
+  extra_class_to_sym = extra.class.to_s.to_sym
+
+  block_to_pass = dispatch[extra] || dispatch[extra_class_to_sym]
+
+  return ParametersCondition.new count, block_to_pass unless block_to_pass.nil?
+
+  ArityCondition.new count
 end
 
-def neg condition
+def neg(condition)
   NegCondition.new condition
 end
-
-
-
-
-
-

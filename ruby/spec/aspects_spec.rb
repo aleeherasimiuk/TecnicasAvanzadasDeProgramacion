@@ -76,6 +76,3 @@ describe "Aspects Test" do
     end
   end
 end
-
-
-
