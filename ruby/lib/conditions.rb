@@ -1,7 +1,9 @@
 # Conditions
+class MethodNotImplementedError < StandardError;end
+
 class BaseCondition
   def validate(method)
-    raise NotImplementedError.new
+    raise MethodNotImplementedError.new
   end
 end
 
