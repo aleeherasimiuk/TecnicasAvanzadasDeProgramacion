@@ -32,6 +32,11 @@ describe "Where tests" do
       subject
       expect(ClassWithMethods.where name(/^m.*/), name(/thod[1-9]$/)).to include(:method2, :method1)
     end
+
+    it "should raise error when a Regexp is not pass as an argument" do
+      subject
+      expect { ClassWithMethods.where name("Method1") }.to raise_error(ArgumentError)
+    end
   end
 
   context "Parameters condition" do
@@ -99,6 +104,26 @@ describe "Where tests" do
       expect(ClassWithMethods.where has_parameters(0, :mandatory)).to include(:method5)
       expect(ClassWithMethods.where has_parameters(0, :mandatory)).to include(:method4)
     end
+
+    it "should raise error when you pass as a second parameter a wrong type" do
+      subject
+      expect { ClassWithMethods.where has_parameters(2, "Not valid string")  }.to raise_error(ArgumentError)
+    end
+
+    it "should raise error when you pass as a second parameter a wrong symbol" do
+      subject
+      expect { ClassWithMethods.where has_parameters(2, :invalid)  }.to raise_error(ArgumentError)
+    end
+
+    it "should raise error when you pass as a first parameter a wrong type" do
+      subject
+      expect { ClassWithMethods.where has_parameters("blah", :optional)  }.to raise_error(ArgumentError)
+    end
+
+    it "should raise error when you pass as a first parameter a wrong type 2" do
+      subject
+      expect { ClassWithMethods.where has_parameters(:symbol)  }.to raise_error(ArgumentError)
+    end
   end
 
   context "Negate condition" do
@@ -136,5 +161,24 @@ describe "Where tests" do
       subject
       expect(ClassWithMethods.where neg(has_parameters(4, :mandatory))).to include(:method1, :method3, :method4, :method5)
     end
+
+    it "should raise error when a condition is not pass as an argument" do
+      subject
+      expect {ClassWithMethods.where neg("Not a condition") }.to raise_error(ArgumentError)
+    end
+  end
+
+  context 'Integration where tests' do
+
+    xit "should return method4 on name condition and method1 on parameters condition" do
+      Aspects.on ClassWithMethods do
+        where name(/method4/), has_parameters(1)
+      end
+
+      expect(ClassWithMethods.get_temp_filtered_methods).to include(:method1, :method4)
+    end
+
+
   end
 end
+
