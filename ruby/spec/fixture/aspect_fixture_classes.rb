@@ -23,3 +23,11 @@ class ClassWithMethods
   def method5(a1 = "")
   end
 end
+
+class Y
+
+  def saludar
+    "Hola"
+  end
+
+end

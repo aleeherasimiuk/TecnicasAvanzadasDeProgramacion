@@ -13,6 +13,19 @@ module LogicModule
     filtered_methods
   end
 
+
+  def transform(methods, &block)
+    
+    methods.each do |method|
+    
+      old_name = get_old_method_name method
+      old_method = get_unbound_method method
+
+      get_by_type(-> {module_transform(old_name, old_method)}, -> {object_transform(old_name, old_method)})
+    
+    end
+  end
+
   private
 
   def validate_conditions(conditions)
@@ -20,18 +33,36 @@ module LogicModule
   end
 
   def get_methods
-    if is_a? Module
-      self.instance_methods
-    else
-      self.methods
-    end
+    get_by_type(-> {self.instance_methods}, -> {self.methods})
   end
 
   def get_unbound_method(method)
+    get_by_type(->{self.instance_method method}, ->{self.method method})
+  end
+
+  def get_old_method_name(method)
+    "__#{method.to_s}_old__"
+  end
+
+  def get_by_type(module_block, object_block)
     if is_a? Module
-      self.instance_method method
+      module_block.call
     else
-      self.method method
+      object_block.call
     end
+  end
+
+  def module_transform(old_name, old_method)
+    define_method(old_name.to_sym, old_method)
+      module_eval do
+        private old_name
+    end
+  end
+
+  def object_transform(old_name, old_method)
+    define_singleton_method(old_name.to_sym, old_method)
+      singleton_class.instance_eval do
+        private old_name
+      end
   end
 end
