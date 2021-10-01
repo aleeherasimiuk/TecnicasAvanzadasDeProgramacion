@@ -15,12 +15,6 @@ module Aspects
       it.extend(LogicModule)
       it.module_eval(&block)
     end
-
-    #modules = get_by_type final_class_modules, Module
-    #modules.each { |it| it.module_eval(&block) }
-
-    #classes = get_by_type final_class_modules, Class    # Se podria hacer mas polimorfico maybe (?
-    #classes.each { |it| it.class_eval(&block) }
   end
 
   private

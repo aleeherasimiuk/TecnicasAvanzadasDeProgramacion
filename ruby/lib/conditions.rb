@@ -1,6 +1,12 @@
 # Conditions
 class MethodNotImplementedError < StandardError;end
 
+module ArityConditionModule
+  def check_arity_type(foo)
+    raise ArgumentError.new 'Paremeter condition can only receive as a first parameter an Integer' unless foo.is_a? Integer
+  end
+end
+
 class BaseCondition
   def validate(method)
     raise MethodNotImplementedError.new
@@ -18,7 +24,7 @@ class NameCondition < BaseCondition
   end
 
   def validate(method)
-    @regex.match(method.original_name.to_s)
+    @regex.match?(method.original_name.to_s)
   end
 
   def validate_type_extra!(foo)
@@ -27,6 +33,9 @@ class NameCondition < BaseCondition
 end
 
 class ParametersCondition < BaseCondition
+
+  include ArityConditionModule
+
   def initialize (params_count, block)
     validate_type_extra! params_count, block
     @params_count = params_count
@@ -43,15 +52,15 @@ class ParametersCondition < BaseCondition
 
   def validate_type_extra!(foo, block)
     check_arity_type foo
-  raise ArgumentError.new 'Invalid type (or symbol) of second argument' if block.nil?
+    raise ArgumentError.new 'Invalid type (or symbol) of second argument' if block.nil?
   end
 end
 
-def check_arity_type(foo)
-  raise ArgumentError.new 'Paremeter condition can only receive as a first parameter an Integer' unless foo.is_a? Integer
-end
-
+# TODO: Ver si ParametersCondition puede heredar de esta clase
 class ArityCondition < BaseCondition
+
+  include ArityConditionModule
+
   def initialize(arity_size)
     validate_type_extra! arity_size
     @arity_size = arity_size

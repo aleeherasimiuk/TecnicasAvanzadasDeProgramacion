@@ -170,12 +170,12 @@ describe "Where tests" do
 
   context 'Integration where tests' do
 
-    xit "should return method4 on name condition and method1 on parameters condition" do
+    it "should return method4 on name condition and method1 on parameters condition" do
       Aspects.on ClassWithMethods do
         where name(/method4/), has_parameters(1)
       end
 
-      expect(ClassWithMethods.get_temp_filtered_methods).to include(:method1, :method4)
+      expect(ClassWithMethods.instance_variable_get :@__temp_filtered_methods__).to include(:method1, :method4)
     end
 
 

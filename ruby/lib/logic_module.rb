@@ -13,13 +13,9 @@ module LogicModule
     filtered_methods
   end
 
-  def self.get_temp_filtered_methods
-    @__temp_filtered_methods__
-  end
-
   private
 
-  def validate_conditions conditions
+  def validate_conditions(conditions)
     raise ArgumentError.new 'Condiciones vacías' if conditions.empty?
   end
 
@@ -31,7 +27,7 @@ module LogicModule
     end
   end
 
-  def get_unbound_method method
+  def get_unbound_method(method)
     if is_a? Module
       self.instance_method method
     else
