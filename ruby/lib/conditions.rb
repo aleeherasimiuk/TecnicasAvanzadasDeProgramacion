@@ -91,7 +91,7 @@ class NegCondition < BaseCondition
 end
 
 
-def name(regex)
+def with_name(regex)
   NameCondition.new regex
 end
 

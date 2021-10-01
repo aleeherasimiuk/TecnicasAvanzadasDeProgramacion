@@ -14,28 +14,28 @@ describe "Where tests" do
   context "Name condition" do
     it "should not return any method when a non matching regex is passed" do
       subject
-      expect(ClassWithMethods.where name(blah_regex)).to be_empty
+      expect(ClassWithMethods.where with_name(blah_regex)).to be_empty
     end
 
     it "should return method1 on name condition" do
       subject
-      expect(ClassWithMethods.where name(/method1/)).to include(:method1)
+      expect(ClassWithMethods.where with_name(/method1/)).to include(:method1)
     end
 
     it "object should return saludar on name condition" do
       subject
       dummy_instance.define_singleton_method(:saludar) { "hola" }
-      expect(dummy_instance.where name(/saludar/)).to include(:saludar)
+      expect(dummy_instance.where with_name(/saludar/)).to include(:saludar)
     end
   
     it "should verify multiple name conditions" do
       subject
-      expect(ClassWithMethods.where name(/^m.*/), name(/thod[1-9]$/)).to include(:method2, :method1)
+      expect(ClassWithMethods.where with_name(/^m.*/), with_name(/thod[1-9]$/)).to include(:method2, :method1)
     end
 
     it "should raise error when a Regexp is not pass as an argument" do
       subject
-      expect { ClassWithMethods.where name("Method1") }.to raise_error(ArgumentError)
+      expect { ClassWithMethods.where with_name("Method1") }.to raise_error(ArgumentError)
     end
   end
 
@@ -134,12 +134,12 @@ describe "Where tests" do
 
     it "should not return method1 when querying for NOT /method1/" do
       subject
-      expect(ClassWithMethods.where neg(name(/method1/))).not_to include(:method1)
+      expect(ClassWithMethods.where neg(with_name(/method1/))).not_to include(:method1)
     end
 
     it "should return all methods except method4 when querying for NOT /.*4/" do
       subject
-      expect(ClassWithMethods.where neg(name(/.*4/))).to include(:method1, :method2, :method3, :method5)
+      expect(ClassWithMethods.where neg(with_name(/.*4/))).to include(:method1, :method2, :method3, :method5)
     end
 
     it "should return all methods except method1 when querying for NOT 3 params" do
@@ -172,10 +172,10 @@ describe "Where tests" do
 
     it "should return method4 on name condition and method1 on parameters condition" do
       Aspects.on ClassWithMethods do
-        where name(/method4/), has_parameters(1)
+        where with_name(/method1/), has_parameters(3)
       end
 
-      expect(ClassWithMethods.instance_variable_get :@__temp_filtered_methods__).to include(:method1, :method4)
+      expect(ClassWithMethods.instance_variable_get :@__temp_filtered_methods__).to include(:method1)
     end
 
 
