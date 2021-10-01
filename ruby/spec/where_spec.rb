@@ -168,7 +168,7 @@ describe "Where tests" do
     end
   end
 
-  context 'Integration where tests' do
+  context 'Complete where tests' do
 
     it "should return method1 on parameters and name condition" do
       Aspects.on ClassWithMethods do
