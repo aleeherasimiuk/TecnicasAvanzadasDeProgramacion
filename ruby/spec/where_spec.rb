@@ -170,7 +170,7 @@ describe "Where tests" do
 
   context 'Integration where tests' do
 
-    it "should return method4 on name condition and method1 on parameters condition" do
+    it "should return method1 on parameters and name condition" do
       Aspects.on ClassWithMethods do
         where with_name(/method1/), has_parameters(3)
       end
@@ -178,7 +178,74 @@ describe "Where tests" do
       expect(ClassWithMethods.instance_variable_get :@__temp_filtered_methods__).to include(:method1)
     end
 
+    it "should not return method2, method3, method4 on parameters and name condition" do
+      Aspects.on ClassWithMethods do
+        where with_name(/method1/), has_parameters(3)
+      end
 
+      expect(ClassWithMethods.instance_variable_get :@__temp_filtered_methods__).not_to include(:method2)
+      expect(ClassWithMethods.instance_variable_get :@__temp_filtered_methods__).not_to include(:method3)
+      expect(ClassWithMethods.instance_variable_get :@__temp_filtered_methods__).not_to include(:method4)
+    end
+
+
+    it "should return method2 on parameters and name condition" do
+      Aspects.on ClassWithMethods do
+        where with_name(/method2/), has_parameters(5)
+      end
+
+      expect(ClassWithMethods.instance_variable_get :@__temp_filtered_methods__).to include(:method2)
+    end
+
+    it "should not return method1, method3, method4 on parameters and name condition" do
+      Aspects.on ClassWithMethods do
+        where with_name(/method2/), has_parameters(5)
+      end
+
+      expect(ClassWithMethods.instance_variable_get :@__temp_filtered_methods__).not_to include(:method1)
+      expect(ClassWithMethods.instance_variable_get :@__temp_filtered_methods__).not_to include(:method3)
+      expect(ClassWithMethods.instance_variable_get :@__temp_filtered_methods__).not_to include(:method4)
+    end
+
+    it "should not return any method with parameters condition" do
+      Aspects.on ClassWithMethods do
+        where has_parameters(7)
+      end
+
+      expect(ClassWithMethods.instance_variable_get :@__temp_filtered_methods__).to be_empty
+    end
+
+    it "should return all methods with name condition /.*/" do
+      Aspects.on ClassWithMethods do
+        where with_name(/.*/)
+      end
+
+      expect(ClassWithMethods.instance_variable_get :@__temp_filtered_methods__).to include(:method1, :method2, :method3, :method4, :method5)
+    end
+
+    it "should not return any methods when negating name condition /.*/" do
+      Aspects.on ClassWithMethods do
+        where neg(with_name(/.*/))
+      end
+
+      expect(ClassWithMethods.instance_variable_get :@__temp_filtered_methods__).to be_empty
+    end
+
+    it "should return method5 when querying for one optional parameter" do
+      Aspects.on ClassWithMethods do
+        where has_parameters(1, :optional)
+      end
+
+      expect(ClassWithMethods.instance_variable_get :@__temp_filtered_methods__).to include(:method5)
+    end
+
+    it "should return all methods when negatin a high value of parameters" do
+      Aspects.on ClassWithMethods do
+        where neg(has_parameters(7))
+      end
+
+      expect(ClassWithMethods.instance_variable_get :@__temp_filtered_methods__).to include(:method1, :method2, :method3, :method4, :method5)
+    end
   end
 end
 
