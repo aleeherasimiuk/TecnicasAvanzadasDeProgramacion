@@ -91,28 +91,31 @@ class NegCondition < BaseCondition
 end
 
 
-def with_name(regex)
-  NameCondition.new regex
+module ConditionsModule
+
+  def with_name(regex)
+    NameCondition.new regex
+  end
+
+  def has_parameters(count, extra = nil)
+
+    return ArityCondition.new count unless extra
+
+    dispatch = {
+      Regexp: proc { |param| extra.match(param[1]) },
+      optional: proc { |param| param.first == :opt },
+      mandatory: proc { |param| param.first == :req }
+    }
+
+    extra_class_to_sym = extra.class.to_s.to_sym
+
+    block_to_pass = dispatch[extra] || dispatch[extra_class_to_sym]
+
+    ParametersCondition.new count, block_to_pass
+  end
+
+  def neg(condition)
+    NegCondition.new condition
+  end
+
 end
-
-def has_parameters(count, extra = nil)
-
-  return ArityCondition.new count unless extra
-
-  dispatch = {
-    Regexp: proc { |param| extra.match(param[1]) },
-    optional: proc { |param| param.first == :opt },
-    mandatory: proc { |param| param.first == :req }
-  }
-
-  extra_class_to_sym = extra.class.to_s.to_sym
-
-  block_to_pass = dispatch[extra] || dispatch[extra_class_to_sym]
-
-  ParametersCondition.new count, block_to_pass
-end
-
-def neg(condition)
-  NegCondition.new condition
-end
-
