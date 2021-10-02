@@ -1,4 +1,5 @@
 module TransformsModule
+  include GetModule
 
   def transform(methods_to_transform, &block)
 

@@ -2,8 +2,9 @@ require 'rspec'
 require 'pry'
 
 require_relative '../lib/aspects'
-require_relative '../lib/transforms'
+require_relative '../lib/get_module'
 require_relative '../lib/conditions'
+require_relative '../lib/transforms'
 require_relative '../lib/logic_module'
 
 

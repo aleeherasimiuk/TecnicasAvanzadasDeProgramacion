@@ -45,9 +45,6 @@ describe "Where tests" do
       expect(ClassWithMethods.where _name.call(/^m.*/), _name.call(/thod[1-9]$/)).to include(:method2, :method1)
     end
 
-    it "should raise error when a Regexp is not pass as an argument" do
-      expect { ClassWithMethods.where _name.call("Method1") }.to raise_error(ArgumentError)
-    end
   end
 
   context "Parameters condition" do
@@ -103,25 +100,9 @@ describe "Where tests" do
       expect(ClassWithMethods.where _has_parameters.call(0, :mandatory)).to include(:method4)
     end
 
-    it "should raise error when you pass as a second parameter a wrong type" do
-      expect { ClassWithMethods.where _has_parameters.call(2, "Not valid string")  }.to raise_error(ArgumentError)
-    end
-
-    it "should raise error when you pass as a second parameter a wrong symbol" do
-      expect { ClassWithMethods.where _has_parameters.call(2, :invalid)  }.to raise_error(ArgumentError)
-    end
-
-    it "should raise error when you pass as a first parameter a wrong type" do
-      expect { ClassWithMethods.where _has_parameters.call("blah", :optional)  }.to raise_error(ArgumentError)
-    end
-
-    it "should raise error when you pass as a first parameter a wrong type 2" do
-      expect { ClassWithMethods.where _has_parameters.call(:symbol)  }.to raise_error(ArgumentError)
-    end
   end
 
   context "Negate condition" do
-
 
     it "should not return method1 when querying for NOT 3 params" do
       subject
@@ -158,10 +139,6 @@ describe "Where tests" do
       expect(ClassWithMethods.where _neg.call(_has_parameters.call(4, :mandatory))).to include(:method1, :method3, :method4, :method5)
     end
 
-    it "should raise error when a condition is not pass as an argument" do
-      subject
-      expect {ClassWithMethods.where _neg.call("Not a condition") }.to raise_error(ArgumentError)
-    end
   end
 
   context 'Complete where tests' do
