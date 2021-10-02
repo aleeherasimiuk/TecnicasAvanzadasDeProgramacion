@@ -1,5 +1,19 @@
 describe "Transforms" do
 
+  before(:each) do
+    class Saludador
+
+      def saludar(nombre1, nombre2, nombre3)
+        "Hola #{nombre1}, #{nombre2}, #{nombre3}"
+      end
+    
+    end
+  end
+
+  after(:each) do
+    Object.send(:remove_const, :Saludador)
+  end
+
 
   context "methods" do
     it "LogicModule instances should respond to transform" do
@@ -50,7 +64,7 @@ describe "Transforms" do
   end
 
   context "should work" do
-    xit "should say 'Hola' to carlos as first parameter" do
+    it "should say 'Hola' to carlos as first parameter" do
 
       Aspects.on(Saludador) do
         transform([:saludar]){
@@ -64,7 +78,7 @@ describe "Transforms" do
       
     end
   
-    xit "should say 'Hola' to carlos as second param" do
+    it "should say 'Hola' to carlos as second param" do
     
       Aspects.on(Saludador) do
         transform([:saludar]){
@@ -79,7 +93,7 @@ describe "Transforms" do
     
     end
   
-    xit "should say 'Hola' to carlos as third param" do
+    it "should say 'Hola' to carlos as third param" do
   
       Aspects.on(Saludador) do
         transform([:saludar]){
@@ -93,7 +107,7 @@ describe "Transforms" do
       
     end
   
-    xit "should say 'Hola' to carlos as third param but passing 2 params" do
+    it "should say 'Hola' to carlos as third param but passing 2 params" do
   
       Aspects.on(Saludador) do
         transform([:saludar]){
@@ -107,7 +121,7 @@ describe "Transforms" do
       
     end
   
-    xit "should say 'Hola' to carlos and pepe as first and second param" do
+    it "should say 'Hola' to carlos and pepe as first and second param" do
       
       Aspects.on(Saludador) do
         transform([:saludar]){
@@ -121,7 +135,7 @@ describe "Transforms" do
       
     end
   
-    xit "should say 'Hola' to carlos and pepe as second and third param" do
+    it "should say 'Hola' to carlos and pepe as second and third param" do
         Aspects.on(Saludador) do
           transform([:saludar]){
             inject(nombre2: "Carlos", nombre3: "Pepe")
@@ -134,7 +148,7 @@ describe "Transforms" do
         
     end
   
-    xit "should say 'Hola' to carlos and pepe as second and third param but passing only 1 param" do
+    it "should say 'Hola' to carlos and pepe as second and third param but passing only 1 param" do
       
       Aspects.on(Saludador) do
         transform([:saludar]){
@@ -148,7 +162,7 @@ describe "Transforms" do
       
     end
   
-    xit "should say 'Hola' to Carlos, Pepe, and Pablo without passing any param" do
+    it "should say 'Hola' to Carlos, Pepe, and Pablo without passing any param" do
       
       Aspects.on(Saludador) do
         transform([:saludar]){
@@ -162,7 +176,7 @@ describe "Transforms" do
       
     end
   
-    xit "should say 'Hola' to Carlos, Pepe, and Pablo passing three params" do
+    it "should say 'Hola' to Carlos, Pepe, and Pablo passing three params" do
   
       Aspects.on(Saludador) do
         transform([:saludar]){
@@ -178,7 +192,7 @@ describe "Transforms" do
   end
 
   context "should raise error" do
-    xit "should throw ArgumentError when Carlos are passed as first param and then we pass 2 params" do
+    it "should throw ArgumentError when Carlos are passed as first param and then we pass 2 params" do
     
       Aspects.on(Saludador) do
         transform([:saludar]){

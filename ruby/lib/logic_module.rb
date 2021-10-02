@@ -27,9 +27,6 @@ module LogicModule
       yield
     
     end
-
-    
-
   end
 
   private
