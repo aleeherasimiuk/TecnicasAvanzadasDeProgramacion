@@ -14,16 +14,22 @@ module LogicModule
   end
 
 
-  def transform(methods, &block)
+  def transform(methods_to_transform, &block)
     
-    methods.each do |method|
+    methods_to_transform.each do |method|
     
       old_name = get_old_method_name method
       old_method = get_unbound_method method
 
       get_by_type(-> {module_transform(old_name, old_method)}, -> {object_transform(old_name, old_method)})
+
+      self.instance_variable_set(:@__method_to_transform__, method)
+      yield
     
     end
+
+    
+
   end
 
   private
