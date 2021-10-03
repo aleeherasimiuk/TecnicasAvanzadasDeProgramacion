@@ -6,6 +6,18 @@ describe "Transforms" do
       def saludar(nombre1, nombre2, nombre3)
         "Hola #{nombre1}, #{nombre2}, #{nombre3}"
       end
+
+      def despedir(nombre1 = "Carlos", nombre2 = "Pedro", nombre3)
+        "Adios #{nombre1}, #{nombre2}, #{nombre3}"
+      end
+
+      def hola_y_chau(nombre1: "Carlos", nombre2: "Pedro")
+        "Hola #{nombre1}, Adiós #{nombre2}"
+      end
+
+      def hola_a_todos(*nombres)
+        "Hola #{nombres.join(', ')}"
+      end
     
     end
   end
@@ -189,6 +201,92 @@ describe "Transforms" do
       expect(saludador.saludar("Juan","Peter","Roberto")).to eq("Hola Carlos, Pepe, Pablo")
       
     end
+
+
+    it "should say 'Adios' to Roberto, Pedro and Peter" do
+        
+        Aspects.on(Saludador) do
+          transform([:despedir]){
+            inject(nombre1: "Roberto")
+          }
+        end
+      
+        saludador = Saludador.new
+      
+        expect(saludador.despedir(nombre1 = "Raul", nombre2 = "María", nombre3 = "Peter")).to eq("Adios Roberto, María, Peter")
+    end
+
+    it "should say 'Adios' to Roberto, Pedro and Peter passing only one param" do
+        Aspects.on(Saludador) do
+          transform([:despedir]){
+            inject(nombre3: "Roberto")
+          }
+        end
+      
+        saludador = Saludador.new
+      
+        expect(saludador.despedir("Raul", "Pablo")).to eq("Adios Raul, Pablo, Roberto")
+    end
+
+    it "should say 'Adios' to Roberto, Raul and María when injectin 2 optional parameters" do
+      Aspects.on(Saludador) do
+        transform([:despedir]){
+          inject(nombre1: "Roberto", nombre2: "Raul")
+        }
+      end
+    
+      saludador = Saludador.new
+    
+      expect(saludador.despedir("Raul", "Pablo", "María")).to eq("Adios Roberto, Raul, María")
+    end
+
+    xit "should say 'Hola' and 'Adios' to Roberto and María when injecting named parameters" do
+      
+      Aspects.on(Saludador) do
+        transform([:hola_y_chau]){
+          inject(nombre1: "Roberto")
+        }
+      end
+    
+      saludador = Saludador.new
+    
+      expect(saludador.hola_y_chau(nombre1: "Raul", nombre2: "María")).to eq("Hola Roberto, Adiós María")
+    end
+
+    it "should say 'Hola' to Roberto only" do
+      
+      Aspects.on(Saludador) do
+        transform([:hola_a_todos]){
+          inject(nombres: ["Roberto"])
+        }
+      end
+    
+      saludador = Saludador.new
+    
+      expect(saludador.hola_a_todos("Raul", "Maria", "Pedro")).to eq("Hola Roberto")
+    end
+
+
+  end
+
+
+  context "should pass the proc result" do
+    
+
+    it "should say 'Hola' to the argument as the third param but with Perez surname" do
+      
+      my_proc = proc{|receptor, mensaje, arg_anterior| arg_anterior + " Perez"}
+
+      Aspects.on(Saludador) do
+        transform([:saludar]){
+          inject(nombre3: my_proc)
+        }
+      end
+    
+      saludador = Saludador.new
+      expect(saludador.saludar("Pepe", "Roberto", "Pablo")).to eq("Hola Pepe, Roberto, Pablo Perez")
+    end
+
   end
 
   context "should raise error" do
@@ -245,6 +343,21 @@ describe "Transforms" do
       saludador = Saludador.new
     
       expect{saludador.saludar()}.to raise_error(ArgumentError) 
+      
+    end
+
+
+    xit "should not say 'Adios' when not passing optional params" do
+        
+      Aspects.on(Saludador) do
+        transform([:despedir]){
+          inject(nombre1: "Roberto")
+        }
+      end
+    
+      saludador = Saludador.new
+    
+      expect(saludador.despedir(nombre3 = "Peter")).to raise_error(ArgumentError)
       
     end
   end
