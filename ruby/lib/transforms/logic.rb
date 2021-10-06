@@ -1,5 +1,6 @@
 module TransformsModule
 
+  public
   # def before &block
 
   #   method_name = @__method_to_transform__
@@ -28,7 +29,7 @@ module TransformsModule
     old_method_name = get_old_method_name @__method_to_transform__
 
     method_definition = Proc.new do |*args|
-      block.call(self, *args)
+      instance_exec(self, *args, &block)
     end
 
     if is_a? Module
@@ -47,7 +48,7 @@ module TransformsModule
     method_definition = Proc.new do |*args|
 
       send(old_method_name, *args)
-      block.call(self, *args)
+      instance_exec(self, *args, &block)
 
     end
 

@@ -17,6 +17,7 @@ module TransformsModule
       yield
 
     end
+
   end
 
   private
@@ -33,5 +34,6 @@ module TransformsModule
       private old_name
     end
   end
+
 
 end

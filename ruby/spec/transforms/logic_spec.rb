@@ -6,6 +6,7 @@ describe "Transforms" do
 
       def sum(a, b)
         @x = a + b
+        @x
       end
 
     end
@@ -23,7 +24,7 @@ describe "Transforms" do
         end
       }
 
-      expect(Calculator.new).to respond_to(:after)
+      expect(Calculator).to respond_to(:after)
     end
   end
   
@@ -43,7 +44,6 @@ describe "Transforms" do
 
       expect(calculator.sum(1, 2)).to eq(6)
 
-      
     end
   end
 
