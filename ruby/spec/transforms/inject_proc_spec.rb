@@ -53,7 +53,6 @@ describe "Transforms" do
           inject(nombre3: my_proc)
         }
       end
-    
       
       expect(saludador.saludar("Pepe", "Roberto", "Pablo")).to eq("Hola Pepe, Roberto, Pablo Perez")
     end

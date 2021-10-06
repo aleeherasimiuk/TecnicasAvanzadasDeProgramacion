@@ -419,6 +419,20 @@ describe "Transforms" do
       expect(saludador.hola_y_chau(nombre1: "Raul", nombre2: "María")).to eq("Hola Roberto, Adiós María")
     end
 
+    xit "should say 'Hola' and 'Adios' to Roberto and Pedro when injectin first named parameter" do
+        
+        saludador = Saludador.new
+  
+        Aspects.on(saludador) do
+          transform([:hola_y_chau]){
+            inject(nombre1: "Roberto")
+          }
+        end
+      
+        expect(saludador.hola_y_chau(nombre2: "Pedro")).to eq("Hola Roberto, Adiós Pedro")
+    end
+
+
     it "should say 'Hola' to Roberto only" do
       
       saludador = Saludador.new
