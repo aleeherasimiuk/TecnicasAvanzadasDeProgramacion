@@ -25,7 +25,7 @@ describe "Transforms" do
     Object.send(:remove_const, :Saludador)
   end
 
-  context "should raise error when passing incorrect arguments" do
+  context "should raise error when passing incorrect arguments injecting params to class" do
     it "should throw ArgumentError when Carlos are passed as first param and then we pass 2 params" do
     
       Aspects.on(Saludador) do
@@ -92,6 +92,75 @@ describe "Transforms" do
       end
     
       saludador = Saludador.new
+    
+      expect(saludador.despedir(nombre3 = "Peter")).to raise_error(ArgumentError)
+      
+    end
+  end
+
+
+  context "should raise error when passing incorrect arguments injecting params to object" do
+    it "should throw ArgumentError when Carlos are passed as first param and then we pass 2 params" do
+    
+      saludador = Saludador.new
+      Aspects.on(saludador) do
+        transform([:saludar]){
+          inject(nombre1: "Carlos")
+        }
+      end
+    
+      expect{saludador.saludar("Juan","Peter")}.to raise_error(ArgumentError) 
+      
+    end
+  
+    it "should throw ArgumentError when Carlos are passed as second param and then we pass 2 params" do
+  
+      saludador = Saludador.new
+      Aspects.on(saludador) do
+        transform([:saludar]){
+          inject(nombre2: "Carlos")
+        }
+      end
+    
+      expect{saludador.saludar("Juan","Peter")}.to raise_error(ArgumentError) 
+      
+    end
+  
+    it "should throw ArgumentError when Carlos are passed as third param and then we pass only one param" do
+      
+      saludador = Saludador.new
+      Aspects.on(saludador) do
+        transform([:saludar]){
+          inject(nombre3: "Carlos")
+        }
+      end
+    
+      expect{saludador.saludar("Juan")}.to raise_error(ArgumentError) 
+      
+    end
+  
+    it "should throw ArgumentError when Carlos are passed as second param and then we pass no params" do
+  
+      saludador = Saludador.new
+      Aspects.on(saludador) do
+        transform([:saludar]){
+          inject(nombre2: "Carlos")
+        }
+      end
+    
+      expect{saludador.saludar()}.to raise_error(ArgumentError) 
+      
+    end
+
+
+    xit "should not say 'Adios' when not passing optional params" do
+        
+      saludador = Saludador.new
+      Aspects.on(saludador) do
+        transform([:despedir]){
+          inject(nombre1: "Roberto")
+        }
+      end
     
       expect(saludador.despedir(nombre3 = "Peter")).to raise_error(ArgumentError)
       

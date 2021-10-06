@@ -25,7 +25,7 @@ describe "Transforms" do
     Object.send(:remove_const, :Saludador)
   end
 
-  context "injecting procs" do
+  context "injecting procs to class" do
     it "should say 'Hola' to the argument as the third param but with Perez surname" do
       
       my_proc = proc{|receptor, mensaje, arg_anterior| arg_anterior + " Perez"}
@@ -37,6 +37,24 @@ describe "Transforms" do
       end
     
       saludador = Saludador.new
+      expect(saludador.saludar("Pepe", "Roberto", "Pablo")).to eq("Hola Pepe, Roberto, Pablo Perez")
+    end
+
+  end
+
+  context "injecting procs to object" do
+    it "should say 'Hola' to the argument as the third param but with Perez surname" do
+      
+      my_proc = proc{|receptor, mensaje, arg_anterior| arg_anterior + " Perez"}
+
+      saludador = Saludador.new
+      Aspects.on(saludador) do
+        transform([:saludar]){
+          inject(nombre3: my_proc)
+        }
+      end
+    
+      
       expect(saludador.saludar("Pepe", "Roberto", "Pablo")).to eq("Hola Pepe, Roberto, Pablo Perez")
     end
 

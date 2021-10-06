@@ -2,9 +2,10 @@ module TransformsModule
   def inject(**hash)
     method_name = @__method_to_transform__
     old_method_name = get_old_method_name @__method_to_transform__
-    unbound_old_method = instance_method(old_method_name.to_sym)
+    #unbound_old_method = instance_method(old_method_name.to_sym)
+    unbound_old_method = get_unbound_method old_method_name.to_sym
 
-    define_method(method_name) do |*args|
+    method_definition = Proc.new do |*args|
 
 
       ## Esto puede ser útil si queremos trabajar con named parameters
@@ -38,6 +39,12 @@ module TransformsModule
 
       send(old_method_name, *new_args.reject{|_, value| value.nil?}.values)
 
+    end
+
+    if is_a? Module
+      define_method(method_name, &method_definition)
+    else
+      define_singleton_method(method_name, &method_definition)
     end
   end
 end
