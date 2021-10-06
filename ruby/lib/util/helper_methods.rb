@@ -1,11 +1,5 @@
 module HelperMethods
 
-=begin
-  Me parecio bien desacoplar esta logica del Logic_module ya que tambien la usa el TransformModule. Sino el
-  transformModule funcionaria igual porque lo tendria el Logic pero en otro contexto le requeriria a la clase que lo
-  implemente que tenga esos metodos.
-=end
-
   def get_methods
     by_type(-> {self.instance_methods}, -> {self.methods})
   end
@@ -24,6 +18,12 @@ module HelperMethods
     else
       object_block.call
     end
+  end
+
+  def methods_name(method_to_transform)
+    old_method_name = get_old_method_name method_to_transform
+
+    [method_to_transform, old_method_name]
   end
 end
 

@@ -1,7 +1,6 @@
 module TransformsModule
   def inject(**hash)
-    method_name = @__method_to_transform__
-    old_method_name = get_old_method_name @__method_to_transform__
+    method_name, old_method_name = methods_name @__method_to_transform__
     #unbound_old_method = instance_method(old_method_name.to_sym)
     unbound_old_method = get_unbound_method old_method_name.to_sym
 

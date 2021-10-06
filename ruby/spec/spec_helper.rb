@@ -2,7 +2,7 @@ require 'rspec'
 require 'pry'
 
 require_relative '../lib/aspects'
-require_relative '../lib/util/get_module'
+require_relative '../lib/util/helper_methods'
 require_relative '../lib/transforms/redirect'
 require_relative '../lib/transforms/inject'
 require_relative '../lib/transforms/logic'
