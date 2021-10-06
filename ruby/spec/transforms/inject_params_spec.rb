@@ -26,168 +26,145 @@ describe "Transforms" do
   end
 
   context "injecting params on class" do
-    it "should say 'Hola' to carlos as first parameter" do
+    context "#saludar" do
 
-      Aspects.on(Saludador) do
-        transform([:saludar]){
-          inject(nombre1: "Carlos")
-        }
-      end
-  
-      saludador = Saludador.new
-  
-      expect(saludador.saludar("Pepe", "Roberto", "Pablo")).to eq("Hola Carlos, Roberto, Pablo")
-      
-    end
-  
-    it "should say 'Hola' to carlos as second param" do
-    
-      Aspects.on(Saludador) do
-        transform([:saludar]){
-          inject(nombre2: "Carlos")
-        }
-      end
-  
-      saludador = Saludador.new
-  
-      expect(saludador.saludar("Pepe", "Roberto", "Pablo")).to eq("Hola Pepe, Carlos, Pablo")
-      
-    
-    end
-  
-    it "should say 'Hola' to carlos as third param" do
-  
-      Aspects.on(Saludador) do
-        transform([:saludar]){
-          inject(nombre3: "Carlos")
-        }
-      end
-  
-      saludador = Saludador.new
-  
-      expect(saludador.saludar("Pepe", "Roberto", "Pablo")).to eq("Hola Pepe, Roberto, Carlos")
-      
-    end
-  
-    it "should say 'Hola' to carlos as third param but passing 2 params" do
-  
-      Aspects.on(Saludador) do
-        transform([:saludar]){
-          inject(nombre3: "Carlos")
-        }
-      end
-  
-      saludador = Saludador.new
-  
-      expect(saludador.saludar("Pepe", "Roberto")).to eq("Hola Pepe, Roberto, Carlos")
-      
-    end
-  
-    it "should say 'Hola' to carlos and pepe as first and second param" do
-      
-      Aspects.on(Saludador) do
-        transform([:saludar]){
-          inject(nombre1: "Carlos", nombre2: "Pepe")
-        }
-      end
-  
-      saludador = Saludador.new
-  
-      expect(saludador.saludar("Juan","Peter","Roberto")).to eq("Hola Carlos, Pepe, Roberto")
-      
-    end
-  
-    it "should say 'Hola' to carlos and pepe as second and third param" do
+      def transform(**hash)
         Aspects.on(Saludador) do
-          transform([:saludar]){
-            inject(nombre2: "Carlos", nombre3: "Pepe")
-          }
+          transform([:saludar]) do
+            inject(**hash)
+          end
         end
+      end
+
+      it "should say 'Hola' to carlos as first parameter" do
+
+        transform(nombre1: "Carlos")
+    
+        saludador = Saludador.new
+    
+        expect(saludador.saludar("Pepe", "Roberto", "Pablo")).to eq("Hola Carlos, Roberto, Pablo")
+        
+      end
+    
+      it "should say 'Hola' to carlos as second param" do
+      
+        transform(nombre2: "Carlos")
+    
+        saludador = Saludador.new
+    
+        expect(saludador.saludar("Pepe", "Roberto", "Pablo")).to eq("Hola Pepe, Carlos, Pablo")
+        
+      
+      end
+    
+      it "should say 'Hola' to carlos as third param" do
+    
+        transform(nombre3: "Carlos")
+    
+        saludador = Saludador.new
+    
+        expect(saludador.saludar("Pepe", "Roberto", "Pablo")).to eq("Hola Pepe, Roberto, Carlos")
+        
+      end
+    
+      it "should say 'Hola' to carlos as third param but passing 2 params" do
+    
+        transform(nombre3: "Carlos")
+    
+        saludador = Saludador.new
+    
+        expect(saludador.saludar("Pepe", "Roberto")).to eq("Hola Pepe, Roberto, Carlos")
+        
+      end
+    
+      it "should say 'Hola' to carlos and pepe as first and second param" do
+        
+        transform(nombre1: "Carlos", nombre2: "Pepe")
+    
+        saludador = Saludador.new
+    
+        expect(saludador.saludar("Juan","Peter","Roberto")).to eq("Hola Carlos, Pepe, Roberto")
+        
+      end
+    
+      it "should say 'Hola' to carlos and pepe as second and third param" do
+          
+        transform(nombre2: "Carlos", nombre3: "Pepe")
     
         saludador = Saludador.new
     
         expect(saludador.saludar("Juan","Peter","Roberto")).to eq("Hola Juan, Carlos, Pepe")
+          
+      end
+    
+      it "should say 'Hola' to carlos and pepe as second and third param but passing only 1 param" do
         
-    end
-  
-    it "should say 'Hola' to carlos and pepe as second and third param but passing only 1 param" do
+        transform(nombre2: "Carlos", nombre3: "Pepe")
       
-      Aspects.on(Saludador) do
-        transform([:saludar]){
-          inject(nombre2: "Carlos", nombre3: "Pepe")
-        }
+        saludador = Saludador.new
+      
+        expect(saludador.saludar("Juan")).to eq("Hola Juan, Carlos, Pepe")
+        
       end
     
-      saludador = Saludador.new
-    
-      expect(saludador.saludar("Juan")).to eq("Hola Juan, Carlos, Pepe")
+      it "should say 'Hola' to Carlos, Pepe, and Pablo without passing any param" do
+        
+        transform(nombre1: "Carlos", nombre2: "Pepe", nombre3: "Pablo")
       
-    end
-  
-    it "should say 'Hola' to Carlos, Pepe, and Pablo without passing any param" do
+        saludador = Saludador.new
       
-      Aspects.on(Saludador) do
-        transform([:saludar]){
-          inject(nombre1: "Carlos", nombre2: "Pepe", nombre3: "Pablo")
-        }
+        expect(saludador.saludar).to eq("Hola Carlos, Pepe, Pablo")
+        
       end
     
-      saludador = Saludador.new
+      it "should say 'Hola' to Carlos, Pepe, and Pablo passing three params" do
     
-      expect(saludador.saludar).to eq("Hola Carlos, Pepe, Pablo")
+        transform(nombre1: "Carlos", nombre2: "Pepe", nombre3: "Pablo")
       
-    end
-  
-    it "should say 'Hola' to Carlos, Pepe, and Pablo passing three params" do
-  
-      Aspects.on(Saludador) do
-        transform([:saludar]){
-          inject(nombre1: "Carlos", nombre2: "Pepe", nombre3: "Pablo")
-        }
+        saludador = Saludador.new
+      
+        expect(saludador.saludar("Juan","Peter","Roberto")).to eq("Hola Carlos, Pepe, Pablo")
+        
       end
-    
-      saludador = Saludador.new
-    
-      expect(saludador.saludar("Juan","Peter","Roberto")).to eq("Hola Carlos, Pepe, Pablo")
-      
     end
 
 
-    it "should say 'Adios' to Roberto, Pedro and Peter" do
-        
+    context "#despedir" do
+
+      def transform(**hash)
         Aspects.on(Saludador) do
-          transform([:despedir]){
-            inject(nombre1: "Roberto")
-          }
+          transform([:despedir]) do
+            inject(**hash)
+          end
         end
+      end
+
+      it "should say 'Adios' to Roberto, Pedro and Peter" do
+        
+        transform(nombre1: "Roberto")
       
         saludador = Saludador.new
       
         expect(saludador.despedir(nombre1 = "Raul", nombre2 = "María", nombre3 = "Peter")).to eq("Adios Roberto, María, Peter")
-    end
+      end
 
-    it "should say 'Adios' to Roberto, Pedro and Peter passing only one param" do
-        Aspects.on(Saludador) do
-          transform([:despedir]){
-            inject(nombre3: "Roberto")
-          }
-        end
+      it "should say 'Adios' to Roberto, Pedro and Peter passing only one param" do
+          
+          transform(nombre3: "Roberto")
+        
+          saludador = Saludador.new
+        
+          expect(saludador.despedir("Raul", "Pablo")).to eq("Adios Raul, Pablo, Roberto")
+      end
+
+      it "should say 'Adios' to Roberto, Raul and María when injectin 2 optional parameters" do
+        
+        transform(nombre1: "Roberto", nombre2: "Raul")
       
         saludador = Saludador.new
       
-        expect(saludador.despedir("Raul", "Pablo")).to eq("Adios Raul, Pablo, Roberto")
-    end
-
-    it "should say 'Adios' to Roberto, Raul and María when injectin 2 optional parameters" do
-      Aspects.on(Saludador) do
-        transform([:despedir]){
-          inject(nombre1: "Roberto", nombre2: "Raul")
-        }
+        expect(saludador.despedir("Raul", "Pablo", "María")).to eq("Adios Roberto, Raul, María")
       end
-    
-      saludador = Saludador.new
-    
-      expect(saludador.despedir("Raul", "Pablo", "María")).to eq("Adios Roberto, Raul, María")
     end
 
     xit "should say 'Hola' and 'Adios' to Roberto and María when injecting named parameters" do
@@ -220,190 +197,158 @@ describe "Transforms" do
 
   context "injecting params on object" do
 
-    it "should not affect another instance of the same class" do
-      
-      saludador = Saludador.new
-      saludador2 = Saludador.new
-
-      Aspects.on(saludador) do
-        transform([:saludar]){
-          inject(nombre1: "Carlos")
-        }
-      end
-    
-      saludador3 = Saludador.new
-      
-      expect(saludador.saludar("Juan","Peter","Roberto")).to eq("Hola Carlos, Peter, Roberto")
-      expect(saludador2.saludar("Juan","Peter","Roberto")).to eq("Hola Juan, Peter, Roberto")
-      expect(saludador3.saludar("Juan","Peter","Roberto")).to eq("Hola Juan, Peter, Roberto")
-      
-    end
-    
-    it "should say 'Hola' to carlos as first parameter" do
-
-      saludador = Saludador.new
-
-      Aspects.on(saludador) do
-        transform([:saludar]){
-          inject(nombre1: "Carlos")
-        }
-      end
-  
-      expect(saludador.saludar("Pepe", "Roberto", "Pablo")).to eq("Hola Carlos, Roberto, Pablo")
-      
-    end
-  
-    it "should say 'Hola' to carlos as second param" do
-    
-      saludador = Saludador.new
-
-      Aspects.on(saludador) do
-        transform([:saludar]){
-          inject(nombre2: "Carlos")
-        }
-      end
-  
-  
-      expect(saludador.saludar("Pepe", "Roberto", "Pablo")).to eq("Hola Pepe, Carlos, Pablo")
-      
-    
-    end
-  
-    it "should say 'Hola' to carlos as third param" do
-  
-      saludador = Saludador.new
-
-      Aspects.on(saludador) do
-        transform([:saludar]){
-          inject(nombre3: "Carlos")
-        }
-      end
-  
-      expect(saludador.saludar("Pepe", "Roberto", "Pablo")).to eq("Hola Pepe, Roberto, Carlos")
-      
-    end
-  
-    it "should say 'Hola' to carlos as third param but passing 2 params" do
-  
-      saludador = Saludador.new
-
-      Aspects.on(saludador) do
-        transform([:saludar]){
-          inject(nombre3: "Carlos")
-        }
-      end
-  
-      expect(saludador.saludar("Pepe", "Roberto")).to eq("Hola Pepe, Roberto, Carlos")
-      
-    end
-  
-    it "should say 'Hola' to carlos and pepe as first and second param" do
-      
-      saludador = Saludador.new
-
-      Aspects.on(saludador) do
-        transform([:saludar]){
-          inject(nombre1: "Carlos", nombre2: "Pepe")
-        }
-      end
-
-  
-      expect(saludador.saludar("Juan","Peter","Roberto")).to eq("Hola Carlos, Pepe, Roberto")
-      
-    end
-  
-    it "should say 'Hola' to carlos and pepe as second and third param" do
-        saludador = Saludador.new
-
-        Aspects.on(saludador) do
-          transform([:saludar]){
-            inject(nombre2: "Carlos", nombre3: "Pepe")
-          }
+    context "#saludar" do
+      def transform(origin, **hash)
+        Aspects.on(origin) do
+          transform([:saludar]) do
+            inject(**hash)
+          end
         end
-    
-        expect(saludador.saludar("Juan","Peter","Roberto")).to eq("Hola Juan, Carlos, Pepe")
+      end
+  
+      it "should not affect another instance of the same class" do
         
-    end
+        saludador = Saludador.new
+        saludador2 = Saludador.new
   
-    it "should say 'Hola' to carlos and pepe as second and third param but passing only 1 param" do
+        transform(saludador, nombre1: "Carlos")
       
-      saludador = Saludador.new
-
-      Aspects.on(saludador) do
-        transform([:saludar]){
-          inject(nombre2: "Carlos", nombre3: "Pepe")
-        }
+        saludador3 = Saludador.new
+        
+        expect(saludador.saludar("Juan","Peter","Roberto")).to eq("Hola Carlos, Peter, Roberto")
+        expect(saludador2.saludar("Juan","Peter","Roberto")).to eq("Hola Juan, Peter, Roberto")
+        expect(saludador3.saludar("Juan","Peter","Roberto")).to eq("Hola Juan, Peter, Roberto")
+        
+      end
+      
+      it "should say 'Hola' to carlos as first parameter" do
+  
+        saludador = Saludador.new
+  
+        transform(saludador, nombre1: "Carlos")
+    
+        expect(saludador.saludar("Pepe", "Roberto", "Pablo")).to eq("Hola Carlos, Roberto, Pablo")
+        
       end
     
-      expect(saludador.saludar("Juan")).to eq("Hola Juan, Carlos, Pepe")
+      it "should say 'Hola' to carlos as second param" do
       
-    end
+        saludador = Saludador.new
   
-    it "should say 'Hola' to Carlos, Pepe, and Pablo without passing any param" do
+        transform(saludador, nombre2: "Carlos")
+    
+    
+        expect(saludador.saludar("Pepe", "Roberto", "Pablo")).to eq("Hola Pepe, Carlos, Pablo")
+        
       
-      saludador = Saludador.new
-
-      Aspects.on(saludador) do
-        transform([:saludar]){
-          inject(nombre1: "Carlos", nombre2: "Pepe", nombre3: "Pablo")
-        }
       end
     
-      expect(saludador.saludar).to eq("Hola Carlos, Pepe, Pablo")
-      
-    end
+      it "should say 'Hola' to carlos as third param" do
+    
+        saludador = Saludador.new
   
-    it "should say 'Hola' to Carlos, Pepe, and Pablo passing three params" do
-  
-      saludador = Saludador.new
-
-      Aspects.on(saludador) do
-        transform([:saludar]){
-          inject(nombre1: "Carlos", nombre2: "Pepe", nombre3: "Pablo")
-        }
+        transform(saludador, nombre3: "Carlos")
+    
+        expect(saludador.saludar("Pepe", "Roberto", "Pablo")).to eq("Hola Pepe, Roberto, Carlos")
+        
       end
     
-      expect(saludador.saludar("Juan","Peter","Roberto")).to eq("Hola Carlos, Pepe, Pablo")
+      it "should say 'Hola' to carlos as third param but passing 2 params" do
+    
+        saludador = Saludador.new
+  
+        transform(saludador, nombre3: "Carlos")
+    
+        expect(saludador.saludar("Pepe", "Roberto")).to eq("Hola Pepe, Roberto, Carlos")
+        
+      end
+    
+      it "should say 'Hola' to carlos and pepe as first and second param" do
+        
+        saludador = Saludador.new
+  
+        transform(saludador, nombre1: "Carlos", nombre2: "Pepe")
+  
+    
+        expect(saludador.saludar("Juan","Peter","Roberto")).to eq("Hola Carlos, Pepe, Roberto")
+        
+      end
+    
+      it "should say 'Hola' to carlos and pepe as second and third param" do
+          saludador = Saludador.new
+  
+          transform(saludador, nombre2: "Carlos", nombre3: "Pepe")
       
+          expect(saludador.saludar("Juan","Peter","Roberto")).to eq("Hola Juan, Carlos, Pepe")
+          
+      end
+    
+      it "should say 'Hola' to carlos and pepe as second and third param but passing only 1 param" do
+        
+        saludador = Saludador.new
+  
+        transform(saludador, nombre2: "Carlos", nombre3: "Pepe")
+      
+        expect(saludador.saludar("Juan")).to eq("Hola Juan, Carlos, Pepe")
+        
+      end
+    
+      it "should say 'Hola' to Carlos, Pepe, and Pablo without passing any param" do
+        
+        saludador = Saludador.new
+  
+        transform(saludador, nombre1: "Carlos", nombre2: "Pepe", nombre3: "Pablo")
+      
+        expect(saludador.saludar).to eq("Hola Carlos, Pepe, Pablo")
+        
+      end
+    
+      it "should say 'Hola' to Carlos, Pepe, and Pablo passing three params" do
+    
+        saludador = Saludador.new
+  
+        transform(saludador, nombre1: "Carlos", nombre2: "Pepe", nombre3: "Pablo")
+      
+        expect(saludador.saludar("Juan","Peter","Roberto")).to eq("Hola Carlos, Pepe, Pablo")
+        
+      end
     end
 
+    context "#despedir" do
 
-    it "should say 'Adios' to Roberto, Pedro and Peter" do
+      def transform(origin, **hash)
+        Aspects.on(origin) do
+          transform([:despedir]) do
+            inject(**hash)
+          end
+        end
+      end
+
+      it "should say 'Adios' to Roberto, Pedro and Peter" do
         
         saludador = Saludador.new
 
-        Aspects.on(saludador) do
-          transform([:despedir]){
-            inject(nombre1: "Roberto")
-          }
-        end
+        transform(saludador, nombre1: "Roberto")
       
         expect(saludador.despedir(nombre1 = "Raul", nombre2 = "María", nombre3 = "Peter")).to eq("Adios Roberto, María, Peter")
-    end
+      end
 
-    it "should say 'Adios' to Roberto, Pedro and Peter passing only one param" do
+      it "should say 'Adios' to Roberto, Pedro and Peter passing only one param" do
+          saludador = Saludador.new
+
+          transform(saludador, nombre3: "Roberto")
+        
+          expect(saludador.despedir("Raul", "Pablo")).to eq("Adios Raul, Pablo, Roberto")
+      end
+
+      it "should say 'Adios' to Roberto, Raul and María when injecting 2 optional parameters" do
+        
         saludador = Saludador.new
 
-        Aspects.on(saludador) do
-          transform([:despedir]){
-            inject(nombre3: "Roberto")
-          }
-        end
+        transform(saludador, nombre1: "Roberto", nombre2: "Raul")
       
-        expect(saludador.despedir("Raul", "Pablo")).to eq("Adios Raul, Pablo, Roberto")
-    end
-
-    it "should say 'Adios' to Roberto, Raul and María when injectin 2 optional parameters" do
-      
-      saludador = Saludador.new
-
-      Aspects.on(saludador) do
-        transform([:despedir]){
-          inject(nombre1: "Roberto", nombre2: "Raul")
-        }
+        expect(saludador.despedir("Raul", "Pablo", "María")).to eq("Adios Roberto, Raul, María")
       end
-    
-      expect(saludador.despedir("Raul", "Pablo", "María")).to eq("Adios Roberto, Raul, María")
     end
 
     xit "should say 'Hola' and 'Adios' to Roberto and María when injecting named parameters" do
