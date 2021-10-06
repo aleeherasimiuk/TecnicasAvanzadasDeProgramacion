@@ -1,3 +1,7 @@
+require_relative './conditions/name'
+require_relative './conditions/neg'
+require_relative './conditions/parameters'
+
 module LogicModule
   include GetModule
   include TransformsModule

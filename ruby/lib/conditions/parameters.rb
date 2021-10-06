@@ -1,10 +1,6 @@
-# Conditions
+require_relative './base'
+
 module ConditionsModule
-
-  def with_name(regex)
-    NameCondition.new regex
-  end
-
   def has_parameters(count, extra = nil)
 
     return ArityCondition.new count unless extra
@@ -21,30 +17,6 @@ module ConditionsModule
 
     ParametersCondition.new count, block_to_pass
   end
-
-  def neg(condition)
-    NegCondition.new condition
-  end
-end
-
-
-class MethodNotImplementedError < StandardError;end
-
-class BaseCondition
-  def validate(method)
-    raise MethodNotImplementedError.new
-  end
-end
-
-class NameCondition < BaseCondition
-  def initialize(regex)
-    @regex = regex
-  end
-
-  def validate(method)
-    @regex.match?(method.original_name.to_s)
-  end
-
 end
 
 class ParametersCondition < BaseCondition
@@ -75,15 +47,3 @@ class ArityCondition < BaseCondition
   end
 
 end
-
-class NegCondition < BaseCondition
-  def initialize(condition)
-    @condition = condition
-  end
-
-  def validate(method)
-    !@condition.validate(method)
-  end
-
-end
-
