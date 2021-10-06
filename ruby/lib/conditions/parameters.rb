@@ -1,6 +1,6 @@
 require_relative './base'
 
-module Parameters
+module ConditionsModule
   def has_parameters(count, extra = nil)
 
     return ArityCondition.new count unless extra

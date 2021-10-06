@@ -1,6 +1,6 @@
 require_relative './base'
 
-module Neg
+module ConditionsModule
   def neg(condition)
     NegCondition.new condition
   end

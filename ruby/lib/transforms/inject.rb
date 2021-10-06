@@ -1,4 +1,4 @@
-module Inject
+module TransformsModule
   def inject(**hash)
     method_name = @__method_to_transform__
     old_method_name = get_old_method_name @__method_to_transform__

@@ -3,8 +3,6 @@ require_relative './redirect'
 
 module TransformsModule
   include GetModule
-  include Inject
-  include Redirect
 
   def transform(methods_to_transform, &block)
 

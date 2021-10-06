@@ -1,4 +1,4 @@
-module Redirect
+module TransformsModule
   def redirect_to(object)
     method_name = @__method_to_transform__
     #Fail fast y no cuando se le envia el mensaje al objeto recien, que directamente no te deje redireccionar

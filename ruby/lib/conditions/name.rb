@@ -1,6 +1,6 @@
 require_relative './base'
 
-module Name
+module ConditionsModule
   def with_name(regex)
     NameCondition.new regex
   end
