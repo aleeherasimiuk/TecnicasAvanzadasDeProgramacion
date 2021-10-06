@@ -2,7 +2,7 @@ require_relative './inject'
 require_relative './redirect'
 
 module TransformsModule
-  include GetModule
+  include HelperMethods
 
   def transform(methods_to_transform, &block)
 
@@ -11,7 +11,7 @@ module TransformsModule
       old_name = get_old_method_name method
       old_method = get_unbound_method method
 
-      get_by_type(-> {module_transform(old_name, old_method)}, -> {object_transform(old_name, old_method)})
+      by_type(-> {module_transform(old_name, old_method)}, -> {object_transform(old_name, old_method)})
 
       self.instance_variable_set(:@__method_to_transform__, method)
       yield

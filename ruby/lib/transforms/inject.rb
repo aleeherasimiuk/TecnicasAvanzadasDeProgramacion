@@ -41,10 +41,6 @@ module TransformsModule
 
     end
 
-    if is_a? Module
-      define_method(method_name, &method_definition)
-    else
-      define_singleton_method(method_name, &method_definition)
-    end
+    by_type(-> {define_method(method_name, &method_definition)}, -> {define_singleton_method(method_name, &method_definition)})
   end
 end

@@ -3,7 +3,6 @@ require_relative './conditions/neg'
 require_relative './conditions/parameters'
 
 module LogicModule
-  include GetModule
   include TransformsModule
   include ConditionsModule
 
