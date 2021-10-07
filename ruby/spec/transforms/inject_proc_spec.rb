@@ -57,5 +57,21 @@ describe "Transforms" do
       expect(saludador.saludar("Pepe", "Roberto", "Pablo")).to eq("Hola Pepe, Roberto, Pablo Perez")
     end
 
+    it "should not affect another instance of the same class" do
+
+      my_proc = proc{|receptor, mensaje, arg_anterior| arg_anterior + " Perez"}
+
+      saludador = Saludador.new
+      Aspects.on(saludador) do
+        transform([:saludar]){
+          inject(nombre3: my_proc)
+        }
+      end
+      
+      saludador2 = Saludador.new
+      expect(saludador.saludar("Pepe", "Roberto", "Pablo")).to eq("Hola Pepe, Roberto, Pablo Perez")
+      expect(saludador2.saludar("Pepe", "Roberto", "Pablo")).to eq("Hola Pepe, Roberto, Pablo")
+    end
+
   end
 end
