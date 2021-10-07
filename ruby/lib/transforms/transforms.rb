@@ -13,7 +13,11 @@ module TransformsModule
       old_name = (@__transformed__[method].last_method_name + "_" if !@__transformed__[method].nil?)|| get_old_method_name(method)
       old_method = get_unbound_method method
 
-      @__transformed__[method] ||= Transformed.new(method, old_method, old_name)
+      if @__transformed__[method].nil?
+        @__transformed__[method] = Transformed.new(method, old_method, old_name)
+      else
+        @__transformed__[method].last_method_name = old_name
+      end
 
       by_type(-> {module_transform(old_name, old_method)}, -> {object_transform(old_name, old_method)})
 
