@@ -25,7 +25,7 @@ module TransformsModule
 
   def instead_of &block
 
-    method_name = @__method_to_transform__
+    method_name, _ = @__method_to_transform__
 
     method_definition = Proc.new do |*args|
       instance_exec(self, *args, &block)
@@ -37,7 +37,7 @@ module TransformsModule
 
   def after &block
 
-    method_name, old_method_name = methods_name @__method_to_transform__
+    method_name, old_method_name = @__method_to_transform__
 
     method_definition = Proc.new do |*args|
 
