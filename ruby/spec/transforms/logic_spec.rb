@@ -78,16 +78,15 @@ describe "Transforms" do
 
       Aspects.on(Calculator) do
         transform([:sum]) do
-          after do |instance, *args|
-          end
+          after {|instance, result, *args| result}
         end
       end
 
       expect {
         Calculator.new.sum(1, 2)
       }.to_not raise_error
-      
-      #expect(Calculator.new.sum(1, 2)).to eq(3) TODO:
+
+      expect(Calculator.new.sum(1, 2)).to eq(3)
     end
   end
 
@@ -188,6 +187,65 @@ describe "Transforms" do
 
       expect(calculator.sum(1, 2)).to eq(9)
       expect(calculator2.sum(1, 2)).to eq(3)
+    end
+
+    it "should execute automatic the original method if not call nor cancel is used" do
+      calculator = Calculator.new
+
+      Aspects.on(calculator) do
+        transform([:sum]) do
+          before do |instance, cont, *args|
+            3
+          end
+        end
+      end
+
+      expect(calculator.sum(1, 2)).to eq(3)
+    end
+
+    it "should cancel the execution of original method" do
+      calculator = Calculator.new
+
+      Aspects.on(calculator) do
+        transform([:sum]) do
+          before do |instance, cont, *args|
+            cont.cancel
+          end
+        end
+      end
+
+      expect(calculator.sum(1, 2)).to eq(nil)
+    end
+
+    it "should cancel the execution of original method with condition" do
+      calculator = Calculator.new
+
+      Aspects.on(calculator) do
+        transform([:sum]) do
+          before do |instance, cont, *args|
+            if args.any? {|a| a > 10}
+              cont.cancel
+            end
+          end
+        end
+      end
+
+      expect(calculator.sum(53, 2)).to eq(nil)
+      expect(calculator.sum(5,3)).to eq(8)
+    end
+
+    it "should cancel the auto execution of original method when using call" do
+      calculator = Calculator.new
+
+      Aspects.on(calculator) do
+        transform([:sum]) do
+          before do |instance, cont, *args|
+            cont.call(instance, 4, 4)
+          end
+        end
+      end
+
+      expect(calculator.sum(1, 2)).to eq(8)
     end
   end
 end

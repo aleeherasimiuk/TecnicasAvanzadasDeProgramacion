@@ -148,4 +148,18 @@ describe "General Tests" do
 
     expect(calculator.circle_area(56)).to eq(27)
   end
+
+  it "should redirect a method that suffered an inject from an Object from class A to another from class B" do
+
+    Aspects.on C do
+      transform([:saludar]) do
+        redirect_to(B.new)
+        inject(x: "Pepe")
+      end
+    end
+
+    expect(C.new.saludar("Mundo")).to eq("Adiosín, Pepe")
+  end
+
+
 end

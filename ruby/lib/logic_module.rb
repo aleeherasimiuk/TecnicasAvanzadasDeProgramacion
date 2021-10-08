@@ -7,7 +7,6 @@ module LogicModule
   include ConditionsModule
 
   def where(*conditions)
-    # TODO: [IDEA] - add a temp inst var to have easier expectations
     @__temp_filtered_methods__ = []
     validate_conditions(conditions)
     methods = get_methods

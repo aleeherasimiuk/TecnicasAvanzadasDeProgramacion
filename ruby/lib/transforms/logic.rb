@@ -1,3 +1,29 @@
+class Callback
+  def initialize(method_name)
+    @should_auto_call = true
+    @method_name = method_name
+  end
+
+  def call(instance, *args)
+    cancel
+    instance.send(@method_name, *args)
+  end
+
+  def cancel
+    @should_auto_call = false
+    nil
+  end
+
+  private
+  def auto_call(instance, *args)
+    if !@should_auto_call
+      @should_auto_call = true
+      return
+    end
+    instance.send(@method_name, *args)
+  end
+end
+
 module TransformsModule
 
   public
@@ -7,11 +33,10 @@ module TransformsModule
 
     method_definition = Proc.new do |*args|
 
-      old_method_proc = Proc.new do |instance, *args|
-        instance.send(old_method_name, *args)
-      end
+      callback = Callback.new old_method_name
 
-      instance_exec(self, old_method_proc, *args, &block)
+      before_val = instance_exec(self, callback, *args, &block)
+      callback.send(:auto_call, self, *args) || before_val # si auto_call no se ejecuta, devolver lo del bloque original
     end
 
     by_type(-> {define_method(method_name, &method_definition)}, -> {define_singleton_method(method_name, &method_definition)})
