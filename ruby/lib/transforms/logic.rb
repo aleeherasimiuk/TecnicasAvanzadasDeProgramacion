@@ -7,7 +7,7 @@ module TransformsModule
 
     method_definition = Proc.new do |*args|
 
-      old_method_proc = Proc.new do |instance, _, *args|
+      old_method_proc = Proc.new do |instance, *args|
         instance.send(old_method_name, *args)
       end
 

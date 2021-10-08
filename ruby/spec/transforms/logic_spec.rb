@@ -147,7 +147,7 @@ describe "Transforms" do
           before do |instance, cont, *args|
             instance.define_singleton_method :sum_plus_ten, proc {args.sum 10}
             new_args = args.map{ |arg| arg * 3 }
-            cont.call(self, nil, *new_args)
+            cont.call(self, *new_args)
           end
         end
       end
