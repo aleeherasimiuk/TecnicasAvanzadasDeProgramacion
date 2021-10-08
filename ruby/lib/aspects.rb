@@ -1,3 +1,6 @@
+class EmptyOriginError < StandardError; end
+class NotBlockGivenError < StandardError; end
+
 module Aspects
   def self.on(*args, &block)
     classes_and_modules, objects, regexps = filter args
@@ -20,7 +23,8 @@ module Aspects
   private
 
   def self.validate_arguments(origins)
-    raise ArgumentError.new 'Origen vacío' if origins.empty? || !block_given?
+    raise EmptyOriginError.new 'Origen vacío' if origins.empty?
+    raise NotBlockGivenError.new unless block_given?
   end
 
   def self.filter(args)

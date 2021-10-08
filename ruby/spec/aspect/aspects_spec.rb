@@ -14,23 +14,23 @@ describe "Aspects Test" do
       end
 
       it "should not be able to allow no parameters" do
-        expect { Aspects.on {} }.to raise_error(ArgumentError)
+        expect { Aspects.on {} }.to raise_error(EmptyOriginError)
       end
 
       it "should not be able to allow no block" do
-        expect { Aspects.on Object }.to raise_error(ArgumentError)
+        expect { Aspects.on Object }.to raise_error(NotBlockGivenError)
       end
 
       it "should not be able to allow no parameters nor block" do
-        expect { Aspects.on }.to raise_error(ArgumentError)
+        expect { Aspects.on }.to raise_error(EmptyOriginError)
       end
 
       it "should not let use regex that not match with anything" do
-        expect { Aspects.on(/PatitoColorDeCafe/) {} }.to raise_error(ArgumentError)
+        expect { Aspects.on(/PatitoColorDeCafe/) {} }.to raise_error(EmptyOriginError)
       end
 
       it "should not raise error when one regex dont match, but another does" do
-        expect { Aspects.on(/PatitoColorDeCafe/, /A.*/) {} }  # se espera que no lance error
+        expect { Aspects.on(/PatitoColorDeCafe/, /^Ar.*/) {} }.not_to raise_error  # se espera que no lance error
       end
     end
 
