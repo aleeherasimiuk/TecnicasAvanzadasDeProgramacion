@@ -7,7 +7,7 @@ module TransformsModule
 
       method_params = unbound_old_method.parameters.map {|param| param[1]}
 
-      puts "method_params: #{method_params}"
+      # puts "method_params: #{method_params}"
 
       new_args = method_params.zip([]).to_h
 

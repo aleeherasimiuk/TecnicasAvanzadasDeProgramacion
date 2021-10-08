@@ -1,29 +1,24 @@
 module TransformsModule
 
   public
-  # def before &block
+  def before(&block)
 
-  #   method_name = @__method_to_transform__
-  #   old_method_name = get_old_method_name @__method_to_transform__
+    method_name, old_method_name = @__method_to_transform__
 
-  #   method_definition = Proc.new do |*args|
+    method_definition = Proc.new do |*args|
 
-  #     old_method_proc = -> do |receptor, ,*args|
-  #       instance_exec *args
-  #     end
+      old_method_proc = Proc.new do |instance, _, *args|
+        instance.send(old_method_name, *args)
+      end
 
-  #     block.call(self, *args)
-  #   end
+      instance_exec(self, old_method_proc, *args, &block)
+    end
 
-  #   if is_a? Module
-  #     define_method(method_name, &method_definition)
-  #   else
-  #     define_singleton_method(method_name, &method_definition)
-  #   end
+    by_type(-> {define_method(method_name, &method_definition)}, -> {define_singleton_method(method_name, &method_definition)})
 
-  # end
+  end
 
-  def instead_of &block
+  def instead_of(&block)
 
     method_name, _ = @__method_to_transform__
 
@@ -35,7 +30,7 @@ module TransformsModule
 
   end
 
-  def after &block
+  def after(&block)
 
     method_name, old_method_name = @__method_to_transform__
 

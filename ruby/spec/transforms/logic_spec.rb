@@ -3,7 +3,7 @@ describe "Transforms" do
   before(:each) do
 
     class Calculator
-
+      attr_accessor :x
       def sum(a, b)
         @x = a + b
       end
@@ -139,4 +139,55 @@ describe "Transforms" do
 
   end
 
+
+  context "#before" do
+    def do_transform(origin)
+      Aspects.on(origin) do
+        transform([:sum]) do
+          before do |instance, cont, *args|
+            instance.define_singleton_method :sum_plus_ten, proc {args.sum 10}
+            new_args = args.map{ |arg| arg * 3 }
+            cont.call(self, nil, *new_args)
+          end
+        end
+      end
+    end
+
+    it "should create a method = sum of original args plus ten" do
+      do_transform(Calculator)
+
+      calculator = Calculator.new
+
+      calculator.sum(1, 2)
+
+      expect(calculator.sum_plus_ten).to eq(13)
+    end
+
+    it "should triplicate args before pass to the actual method on Class" do
+      do_transform(Calculator)
+
+      calculator = Calculator.new
+
+      expect(calculator.sum(1, 2)).to eq(9)
+    end
+
+    it "should triplicate args before pass to the actual method on instance" do
+      calculator = Calculator.new
+
+      do_transform(calculator)
+
+      expect(calculator.sum(1, 2)).to eq(9)
+    end
+
+    it "should not afect another instances of the class" do
+      calculator = Calculator.new
+
+      do_transform(calculator)
+
+      calculator2 = Calculator.new
+
+      expect(calculator.sum(1, 2)).to eq(9)
+      expect(calculator2.sum(1, 2)).to eq(3)
+    end
+  end
 end
