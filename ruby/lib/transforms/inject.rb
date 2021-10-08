@@ -14,7 +14,7 @@ module TransformsModule
         if !hash[key].nil?
           if !hash[key].is_a? Proc
             new_args[key] = hash[key]
-          else                            
+          else
             new_args[key] = instance_exec(self, method_name, args[i], &hash[key])
           end
         else

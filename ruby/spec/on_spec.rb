@@ -114,18 +114,16 @@ describe "General Tests" do
     calculator = Calculator.new
 
     Aspects.on(calculator) do
-      transform(where(has_parameters(1))) do
+      transform(where(has_parameters(1, /radius/))) do
 
         before do |instance, cont, *args|
-          @pi = 4
+          instance.pi = 4
           cont.call(self, *args)
         end
-
-        #inject(radius: 5)
-
+        inject(radius: 5)
       end
     end
 
-    expect(calculator.circle_area(1)).to eq(3.5)
+    expect(calculator.circle_area(1)).to eq(100)
   end
 end
