@@ -4,8 +4,22 @@ describe "General Tests" do
 
     class Calculator
 
+      attr_accessor :pi
+
+      def initialize
+        @pi = 3.14
+      end
+
       def sum(a, b)
         a + b
+      end
+
+      def sum_hipster(p1, p2)
+        p1 - (-p2)
+      end
+
+      def circle_area(radius)
+        @pi * radius**2
       end
 
     end
@@ -14,6 +28,10 @@ describe "General Tests" do
 
       def sum(a, b)
         a - b
+      end
+
+      def sum_hipster(p1, p2)
+        p1 - (-(-p2))
       end
 
     end
@@ -90,5 +108,24 @@ describe "General Tests" do
     end
 
     expect(calculator.sum(752, 5)).to eq(30)
+  end
+
+  it "should romper" do
+    calculator = Calculator.new
+
+    Aspects.on(calculator) do
+      transform(where(has_parameters(1))) do
+
+        before do |instance, cont, *args|
+          @pi = 4
+          cont.call(self, *args)
+        end
+
+        #inject(radius: 5)
+
+      end
+    end
+
+    expect(calculator.circle_area(1)).to eq(3.5)
   end
 end
