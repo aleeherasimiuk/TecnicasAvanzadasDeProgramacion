@@ -95,6 +95,18 @@ describe "Transforms" do
     end
 
 
+    it "should say 'Hola' to Carlos, Pepe and Pablo when injecting params by three inject in the same transform" do
+
+      Aspects.on(Saludador) do
+
+        transform [:saludar] do
+          inject(nombre1: "Carlos")
+          inject(nombre2: "Pepe")
+          inject(nombre3: "Pablo")
+        end
+      end
+    end
+
   end
 
 end
