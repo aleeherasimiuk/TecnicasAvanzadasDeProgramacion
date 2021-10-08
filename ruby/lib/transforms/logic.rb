@@ -36,8 +36,8 @@ module TransformsModule
 
     method_definition = Proc.new do |*args|
 
-      send(old_method_name, *args)
-      instance_exec(self, *args, &block)
+      result = send(old_method_name, *args)
+      instance_exec(self, result, *args, &block)
 
     end
 

@@ -76,6 +76,25 @@ describe "Transforms" do
       expect(Saludador.new.saludar("Roberto", "José", "María")).to eq("Hola Carlos, Pepe, Pablo")
     end
 
+    it "should not include /_old_*/ methods to transform" do
+      Aspects.on(Saludador) do
+        transform [:saludar] do
+          inject(nombre1: "Carlos")
+        end
+
+        transform [:saludar] do
+          inject(nombre2: "Pedro")
+        end
+      end
+
+      _name = Saludador.method(:with_name)
+      
+      expect(Saludador.where(_name.call(/.*saludar.*/))).to include(:saludar)
+      expect(Saludador.where(_name.call(/.*saludar.*/))).not_to include(:__saludar_old__)
+      expect(Saludador.where(_name.call(/.*saludar.*/))).not_to include(:__saludar_old___)
+    end
+
+
   end
 
 end

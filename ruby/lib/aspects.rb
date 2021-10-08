@@ -40,13 +40,13 @@ module Aspects
   def self.modules_by_regex(regexps)
     regexps
       .flat_map { |regex| evaluate_matches regex }
-      .uniq # Este uniq es porque puede ser que una clase entre en varias Reg. Exp.
+      .uniq
   end
 
   def self.evaluate_matches(regexp)
     Module.constants
           .select { |sym| regexp.match?(sym.to_s) }
-          .map { |sym| Kernel.const_get sym } # pasar de symbol a Clase/Modulo
+          .map { |sym| Kernel.const_get sym }
           .reject { |matched| [Object, BasicObject, Kernel, NilClass, Class, Module].include? matched }
   end
 end

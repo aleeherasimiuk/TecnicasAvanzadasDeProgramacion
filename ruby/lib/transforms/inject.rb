@@ -1,13 +1,11 @@
 module TransformsModule
   def inject(**hash)
     method_name, old_method_name = @__method_to_transform__
-    unbound_old_method = @__transformed__[method_name].unbound_original#get_unbound_method old_method_name.to_sym
+    unbound_old_method = @__transformed__[method_name].unbound_original
 
     method_definition = Proc.new do |*args|
 
       method_params = unbound_old_method.parameters.map {|param| param[1]}
-
-      # puts "method_params: #{method_params}"
 
       new_args = method_params.zip([]).to_h
 

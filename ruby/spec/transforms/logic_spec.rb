@@ -33,7 +33,7 @@ describe "Transforms" do
     def do_transform(origin)
       Aspects.on(origin) do
         transform([:sum]) do
-          after do |instance, *args|
+          after do |instance, _, *args|
             @x * 2
           end
         end
