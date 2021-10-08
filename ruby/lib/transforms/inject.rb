@@ -1,11 +1,17 @@
+class NamedParametersNotSupported < StandardError; end
+
 module TransformsModule
   def inject(**hash)
-    method_name, old_method_name = @__method_to_transform__
+    method_name, old_method_name = redefine_method(@__method_to_transform__)
     unbound_old_method = @__transformed__[method_name].unbound_original
+    original_parameters = unbound_old_method.parameters
 
     method_definition = Proc.new do |*args|
 
-      method_params = unbound_old_method.parameters.map {|param| param[1]}
+      # raise error when using named parameters
+      raise (NamedParametersNotSupported.new) if original_parameters.any? {|param| param[0] == :key}
+
+      method_params = original_parameters.map {|param| param[1]}
 
       new_args = method_params.zip([]).to_h
 

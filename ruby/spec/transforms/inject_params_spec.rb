@@ -167,7 +167,7 @@ describe "Transforms" do
       end
     end
 
-    xit "should say 'Hola' and 'Adios' to Roberto and María when injecting named parameters" do
+    it "should not support named parameters with inject" do
       
       Aspects.on(Saludador) do
         transform([:hola_y_chau]){
@@ -177,7 +177,7 @@ describe "Transforms" do
     
       saludador = Saludador.new
     
-      expect(saludador.hola_y_chau(nombre1: "Raul", nombre2: "María")).to eq("Hola Roberto, Adiós María")
+      expect{saludador.hola_y_chau(nombre1: "Raul", nombre2: "María")}.to raise_error(NamedParametersNotSupported)
     end
 
     it "should say 'Hola' to Roberto only" do
@@ -350,33 +350,6 @@ describe "Transforms" do
         expect(saludador.despedir("Raul", "Pablo", "María")).to eq("Adios Roberto, Raul, María")
       end
     end
-
-    xit "should say 'Hola' and 'Adios' to Roberto and María when injecting named parameters" do
-      
-      saludador = Saludador.new
-
-      Aspects.on(saludador) do
-        transform([:hola_y_chau]){
-          inject(nombre1: "Roberto")
-        }
-      end
-    
-      expect(saludador.hola_y_chau(nombre1: "Raul", nombre2: "María")).to eq("Hola Roberto, Adiós María")
-    end
-
-    xit "should say 'Hola' and 'Adios' to Roberto and Pedro when injectin first named parameter" do
-        
-        saludador = Saludador.new
-  
-        Aspects.on(saludador) do
-          transform([:hola_y_chau]){
-            inject(nombre1: "Roberto")
-          }
-        end
-      
-        expect(saludador.hola_y_chau(nombre2: "Pedro")).to eq("Hola Roberto, Adiós Pedro")
-    end
-
 
     it "should say 'Hola' to Roberto only" do
       

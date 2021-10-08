@@ -38,8 +38,7 @@ module HelperMethods
 
     by_type(-> {module_transform(old_name, old_method)}, -> {object_transform(old_name, old_method)})
 
-
-    self.instance_variable_set(:@__method_to_transform__, [method, old_name])
+    [method, old_name]
   end
 end
 

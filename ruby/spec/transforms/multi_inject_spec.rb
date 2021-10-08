@@ -17,8 +17,8 @@ describe "Transforms" do
     it "should respond to aspected method concatenated with __prefix and _old__ sufix and an adittional _ for each transform for two transforms" do
       
       Aspects.on(Saludador) do
-        transform([:saludar]) {}
-        transform([:saludar]) {}
+        transform([:saludar]) { after {} }
+        transform([:saludar]) { after {} }
       end
   
       expect(Saludador.instance_method(:__saludar_old__)).not_to be_nil
@@ -29,9 +29,9 @@ describe "Transforms" do
     it "should respond to aspected method concatenated with __prefix and _old__ sufix and an adittional _ for each transform for three transforms" do
       
       Aspects.on(Saludador) do
-        transform([:saludar]) {}
-        transform([:saludar]) {}
-        transform([:saludar]) {}
+        transform([:saludar]) { after {} }
+        transform([:saludar]) { after {} }
+        transform([:saludar]) { after {} }
       end
   
       expect(Saludador.instance_method(:__saludar_old__)).not_to be_nil

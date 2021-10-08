@@ -81,21 +81,6 @@ describe "Transforms" do
       expect{saludador.saludar()}.to raise_error(ArgumentError) 
       
     end
-
-
-    xit "should not say 'Adios' when not passing optional params" do
-        
-      Aspects.on(Saludador) do
-        transform([:despedir]){
-          inject(nombre1: "Roberto")
-        }
-      end
-    
-      saludador = Saludador.new
-    
-      expect(saludador.despedir(nombre3 = "Peter")).to raise_error(ArgumentError)
-      
-    end
   end
 
 
@@ -149,20 +134,6 @@ describe "Transforms" do
       end
     
       expect{saludador.saludar()}.to raise_error(ArgumentError) 
-      
-    end
-
-
-    xit "should not say 'Adios' when not passing optional params" do
-        
-      saludador = Saludador.new
-      Aspects.on(saludador) do
-        transform([:despedir]){
-          inject(nombre1: "Roberto")
-        }
-      end
-    
-      expect(saludador.despedir(nombre3 = "Peter")).to raise_error(ArgumentError)
       
     end
   end

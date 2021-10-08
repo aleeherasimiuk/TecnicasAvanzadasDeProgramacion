@@ -9,7 +9,7 @@ module TransformsModule
     self.instance_variable_set(:@__transformed__, {}) if @__transformed__.nil?
 
     methods_to_transform.each do |method|
-      redefine_method(method)
+      self.instance_variable_set(:@__method_to_transform__, method)
       yield
     end
 
