@@ -23,3 +23,32 @@ class ClassWithMethods
   def method5(a1 = "")
   end
 end
+
+class Y
+
+  def saludar
+    "Hola"
+  end
+end
+
+class C
+  def saludar(x)
+    "Hola, ". + x
+  end
+
+  def operar(a,b,c)
+    a + b + c
+  end
+end
+
+class B
+  def saludar(x)
+    "Adiosín, " + x
+  end
+
+  def operar(a,b,c)
+    a * b * c
+  end
+end
+
+

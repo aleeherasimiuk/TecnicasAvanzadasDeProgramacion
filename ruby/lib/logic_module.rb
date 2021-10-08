@@ -1,4 +1,11 @@
+require_relative './conditions/name'
+require_relative './conditions/neg'
+require_relative './conditions/parameters'
+
 module LogicModule
+  include TransformsModule
+  include ConditionsModule
+
   def where(*conditions)
     # TODO: [IDEA] - add a temp inst var to have easier expectations
     @__temp_filtered_methods__ = []
@@ -13,29 +20,11 @@ module LogicModule
     filtered_methods
   end
 
-  def self.get_temp_filtered_methods
-    @__temp_filtered_methods__
-  end
 
   private
 
-  def validate_conditions conditions
+  def validate_conditions(conditions)
     raise ArgumentError.new 'Condiciones vacías' if conditions.empty?
   end
 
-  def get_methods
-    if is_a? Module
-      self.instance_methods
-    else
-      self.methods
-    end
-  end
-
-  def get_unbound_method method
-    if is_a? Module
-      self.instance_method method
-    else
-      self.method method
-    end
-  end
 end
