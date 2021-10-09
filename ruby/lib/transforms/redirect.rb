@@ -6,6 +6,6 @@ module TransformsModule
       object.send(method_name, *args)
     end
 
-    by_type(-> {define_method(method_name, &method_definition)}, -> {define_singleton_method(method_name, &method_definition)})
+    replace_method(method_name, &method_definition)
   end
 end

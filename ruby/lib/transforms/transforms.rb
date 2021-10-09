@@ -30,5 +30,7 @@ module TransformsModule
     end
   end
 
-
+  def replace_method(method_name, &method_definition)
+    by_type(-> {define_method(method_name, &method_definition)}, -> {define_singleton_method(method_name, &method_definition)})
+  end
 end

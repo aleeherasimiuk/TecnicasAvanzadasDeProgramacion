@@ -39,8 +39,7 @@ module TransformsModule
       callback.send(:auto_call, self, *args) || before_val # si auto_call no se ejecuta, devolver lo del bloque original
     end
 
-    by_type(-> {define_method(method_name, &method_definition)}, -> {define_singleton_method(method_name, &method_definition)})
-
+    replace_method(method_name, &method_definition)
   end
 
   def instead_of(&block)
@@ -51,8 +50,7 @@ module TransformsModule
       instance_exec(self, *args, &block)
     end
 
-    by_type(-> {define_method(method_name, &method_definition)}, -> {define_singleton_method(method_name, &method_definition)})
-
+    replace_method(method_name, &method_definition)
   end
 
   def after(&block)
@@ -66,7 +64,6 @@ module TransformsModule
 
     end
 
-    by_type(-> {define_method(method_name, &method_definition)}, -> {define_singleton_method(method_name, &method_definition)})
-
+    replace_method(method_name, &method_definition)
   end
 end
