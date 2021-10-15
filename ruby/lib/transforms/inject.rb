@@ -1,6 +1,7 @@
 class NamedParametersNotSupported < StandardError; end
 
 module TransformsModule
+  public
   def inject(**hash)
     method_name, old_method_name = redefine_method(@__method_to_transform__)
     unbound_old_method = @__transformed__[method_name].unbound_original
