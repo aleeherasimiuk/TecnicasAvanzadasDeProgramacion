@@ -1,6 +1,7 @@
 class NamedParametersNotSupported < StandardError; end
 
 module TransformsModule
+  public
   def inject(**hash)
     method_name, old_method_name = redefine_method(@__method_to_transform__)
     unbound_old_method = @__transformed__[method_name].unbound_original
@@ -29,10 +30,12 @@ module TransformsModule
         i += 1
       end
 
-      send(old_method_name, *new_args.reject{|_, value| value.nil?}.values)
+      params_without_nil = new_args.reject {|_, value| value.nil?}.values
+      send(old_method_name, *params_without_nil)
 
     end
 
-    by_type(-> {define_method(method_name, &method_definition)}, -> {define_singleton_method(method_name, &method_definition)})
+    replace_method(method_name, &method_definition)
   end
+
 end
