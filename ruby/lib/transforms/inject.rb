@@ -29,10 +29,12 @@ module TransformsModule
         i += 1
       end
 
-      send(old_method_name, *new_args.reject{|_, value| value.nil?}.values)
+      params_without_nil = new_args.reject {|_, value| value.nil?}.values
+      send(old_method_name, *params_without_nil)
 
     end
 
     replace_method(method_name, &method_definition)
   end
+
 end
