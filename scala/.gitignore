@@ -1,4 +1,9 @@
 target
 .idea
 project/target
+
+## From VSCode
 .metals/
+.bloop/
+project/project/
+project/metals.sbt
