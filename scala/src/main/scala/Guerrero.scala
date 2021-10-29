@@ -1,4 +1,4 @@
-class Guerrero(_fuerza: Double,_velocidad: Int, _nivel: Int, _salud: Int) extends Heroe(_fuerza, _velocidad, _nivel, _salud) {
+class Guerrero(fuerza: Double,velocidad: Int, nivel: Int, salud: Int) extends Heroe(fuerza, velocidad, nivel, salud) {
     override def fuerza(): Double = fuerza + this.nivel * (fuerza * 0.2) 
 
     def sabeAbrirPuerta(puerta: Puerta): Boolean = puerta match {
