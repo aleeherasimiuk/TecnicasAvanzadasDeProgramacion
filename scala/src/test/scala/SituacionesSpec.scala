@@ -7,7 +7,7 @@ class SituacionesSpec extends AnyFlatSpec with GivenWhenThen {
 
   val mago = Heroe(20, 6, 12, 20, Mago(List.empty), Bigote)
   val ladron = Heroe(20, 10, 10, 20, Ladron(3), Bigote)
-  val grupo = Grupo(List(mago, ladron), List.empty)
+  val grupo = Grupo(List(mago, ladron))
 
   it should "Una situacion que no hace nada no afecta al grupo" in {
     When("cuando transcurre la situacion")

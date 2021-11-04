@@ -1,4 +1,4 @@
-case class Grupo( integrantes: List[Heroe], cofre: List[Item], puertasDescubiertas: List[Puerta] = List.empty, puertasAbiertas: List[Puerta] = List.empty ) {
+case class Grupo( integrantes: List[Heroe], cofre: List[Item] = List.empty, puertasDescubiertas: List[Puerta] = List.empty, puertasAbiertas: List[Puerta] = List.empty ) {
 
   def cantidadIntegrantes: Int = integrantes.size
 
