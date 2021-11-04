@@ -14,7 +14,7 @@ case class Heroe(val _fuerza: Double, val _velocidad: Int, val _nivel: Int, val 
     case _ => false
   }
 
-  def morirse(): Unit = bajarSalud(_salud)
+  def morirse(): Heroe = bajarSalud(_salud)
 
   def subirDeNivel(): Heroe = this.copy(_nivel = this._nivel + 1)
 
