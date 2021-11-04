@@ -29,7 +29,7 @@ case class Heroe(val _fuerza: Double, val _velocidad: Int, val _nivel: Int, val 
   }
 
   def leAgradaGrupo(unGrupo: Grupo): Boolean = {
-    criterio.leAgradaGrupo(unGrupo)
+    criterio.leAgradaElGrupo(unGrupo)
   }
 
 }

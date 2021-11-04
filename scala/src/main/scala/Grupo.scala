@@ -1,6 +1,6 @@
 case class Grupo( integrantes: List[Heroe], cofre: List[Item], puertasDescubiertas: List[Puerta] = List.empty, puertasAbiertas: List[Puerta] = List.empty ) {
 
-  lazy val cantidadIntegrantes: Int = integrantes.size
+  def cantidadIntegrantes: Int = integrantes.size
 
   def lider: Heroe = integrantes.head
 
@@ -15,6 +15,8 @@ case class Grupo( integrantes: List[Heroe], cofre: List[Item], puertasDescubiert
 
   def obtenerItem(item: Item): Grupo =
     this.copy(cofre = this.cofre ++ List(item))
+
+  def tieneItem(item: Item): Boolean = this.cofre.contains(item)
 
   def matarIntegranteMasLento(): Grupo = {
     val integranteMasLento = integrantes.minBy(_._velocidad)
