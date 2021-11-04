@@ -1,4 +1,6 @@
-case class Grupo(integrantes: List[Heroe], cofre: List[Item]) {
+case class Grupo(integrantes: List[Heroe], cofre: List[Item], puertasDescubiertas: List[Puerta], puertasAbiertas: List[Puerta]) {
+
+  lazy val cantidadIntegrantes: Int = integrantes.size
 
   def lider: Heroe = integrantes.head
 
