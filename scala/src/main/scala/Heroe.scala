@@ -14,6 +14,8 @@ case class Heroe(val _fuerza: Double, val _velocidad: Int, val _nivel: Int, val 
     case _ => false
   }
 
+  def morirse(): Unit = bajarSalud(_salud)
+
   def subirDeNivel(): Heroe = this.copy(_nivel = this._nivel + 1)
 
   def bajarSalud(cantidad: Int): Heroe = this.copy(_salud = this._salud - cantidad)
@@ -24,6 +26,10 @@ case class Heroe(val _fuerza: Double, val _velocidad: Int, val _nivel: Int, val 
   def fuerza(): Double = trabajo match {
     case Guerrero => this._fuerza + this._nivel * (this._fuerza * 0.2)
     case _ => this._fuerza
+  }
+
+  def leAgradaGrupo(unGrupo: Grupo): Boolean = {
+    criterio.leAgradaGrupo(unGrupo)
   }
 
 }
