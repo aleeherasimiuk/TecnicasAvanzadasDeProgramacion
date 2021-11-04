@@ -1,4 +1,4 @@
-case class Heroe(val _fuerza: Double, val _velocidad: Int, val _nivel: Int, val _salud: Int, trabajo: Trabajo) {
+case class Heroe(val _fuerza: Double, val _velocidad: Int, val _nivel: Int, val _salud: Int, trabajo: Trabajo, criterio: Criterio) {
 
   def estaMuerto: Boolean = _salud <= 0
 
@@ -15,6 +15,8 @@ case class Heroe(val _fuerza: Double, val _velocidad: Int, val _nivel: Int, val 
   }
 
   def subirDeNivel(): Heroe = this.copy(_nivel = this._nivel + 1)
+
+  def bajarSalud(cantidad: Int): Heroe = this.copy(_salud = this._salud - cantidad)
 
   def puedePuertaCompuesta(puertaComp: PuertaCompuesta, cofre: List[Item]): Boolean =
     puertaComp.puertas.foldRight(true) {(puerta,valorDeLaAnt) => this.sabeAbrirPuerta(puerta, cofre) && valorDeLaAnt }

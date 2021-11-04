@@ -202,7 +202,7 @@ class HeroesSpec extends AnyFlatSpec with GivenWhenThen with HeroeBehaviour{
   }
 
   it should "con únicamente un ladrón con ganzúas puede abrir una puerta cerrada" in {
-    Given("un grupo con ladron ")
+    Given("un grupo con ladron")
     val ladron = ladronConHabilidad(2)
     val grupo = Grupo(List(ladron), List(Ganzúas))
 
@@ -212,9 +212,12 @@ class HeroesSpec extends AnyFlatSpec with GivenWhenThen with HeroeBehaviour{
 
 
   it should "con un mago sin hechizos y un ladrón sin ganzúas no pueden abrir una puerta cerrada" in {
+    Given("un grupo con un mago sin hechizos y un ladron")
     val mago = magoConHechizos(List())
     val ladron = ladronConHabilidad(2)
     val grupo = Grupo(List(mago, ladron), List.empty)
+
+    Then("No pueden abrir una puerta cerrada")
     assert(!grupo.sabeAbrirPuerta(PuertaCerrada))
   }
 
