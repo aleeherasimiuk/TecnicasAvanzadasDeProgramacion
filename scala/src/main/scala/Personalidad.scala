@@ -1,19 +1,19 @@
-sealed trait Criterio {
+sealed trait Personalidad {
   def leAgradaElGrupo(grupo: Grupo): Boolean
 }
 
-case object Introvertido extends Criterio {
+case object Introvertido extends Personalidad {
   override def leAgradaElGrupo(grupo: Grupo): Boolean = grupo.cantidadIntegrantes <= 3
 }
 
-case object Bigote extends Criterio {
+case object Bigote extends Personalidad {
   override def leAgradaElGrupo(grupo: Grupo): Boolean = !grupo.tieneLadron
 }
 
-case class Interesado(item: Item) extends Criterio {
+case class Interesado(item: Item) extends Personalidad {
   override def leAgradaElGrupo(grupo: Grupo): Boolean = grupo.tieneItem(item)
 }
 
-case object Loquito extends Criterio {
+case object Loquito extends Personalidad {
   override def leAgradaElGrupo(grupo: Grupo): Boolean = false
 }

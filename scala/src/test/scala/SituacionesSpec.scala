@@ -5,8 +5,8 @@ import org.scalatest.matchers.should.Matchers._
 class SituacionesSpec extends AnyFlatSpec with GivenWhenThen {
   behavior of "Una situación"
 
-  val mago = Heroe(5, 6, 12, 20, Mago(List.empty), Bigote)
-  val ladron = Heroe(5, 10, 10, 20, Ladron(3), Bigote)
+  val mago = Heroe(5, 6, 12, 20, Mago(List.empty), Bigote, criterio = Heroico)
+  val ladron = Heroe(5, 10, 10, 20, Ladron(3), Bigote, criterio = Heroico)
   val grupo = Grupo(List(mago, ladron))
 
   it should "no hacer nada" in {
@@ -30,8 +30,8 @@ class SituacionesSpec extends AnyFlatSpec with GivenWhenThen {
 
   it should "perder 10 de vida todos los integrantes" in {
     Given("un grupo con -10 de salud con respecto al original")
-    val mago2   = Heroe(5, 6, 12, 10, Mago(List.empty), Bigote)
-    val ladron2 = Heroe(5, 10, 10, 10, Ladron(3), Bigote)
+    val mago2   = Heroe(5, 6, 12, 10, Mago(List.empty), Bigote, criterio = Heroico)
+    val ladron2 = Heroe(5, 10, 10, 10, Ladron(3), Bigote, criterio = Heroico)
     val grupo2  = Grupo(List(mago2, ladron2), List.empty)
 
     When("transcurre la situacion 'MuchosMuchosDardos'")
@@ -72,7 +72,7 @@ class SituacionesSpec extends AnyFlatSpec with GivenWhenThen {
     val grupo2 = Grupo(List(mago, ladron, ladron))
 
     And("un heroe introvertido")
-    val ladron2 = Heroe(20, 10, 10, 20, Ladron(3), Introvertido)
+    val ladron2 = Heroe(20, 10, 10, 20, Ladron(3), Introvertido, criterio = Heroico)
 
     Then("le cae bien")
     ladron2.leAgradaGrupo(grupo2) shouldBe true
@@ -83,7 +83,7 @@ class SituacionesSpec extends AnyFlatSpec with GivenWhenThen {
     val grupo2 = Grupo(List(mago, ladron, mago, ladron))
 
     And("un heroe introvertido")
-    val ladron2 = Heroe(20, 10, 10, 20, Ladron(3), Introvertido)
+    val ladron2 = Heroe(20, 10, 10, 20, Ladron(3), Introvertido, criterio = Heroico)
 
     Then("no le cae bien")
     ladron2.leAgradaGrupo(grupo2) shouldBe false
@@ -94,7 +94,7 @@ class SituacionesSpec extends AnyFlatSpec with GivenWhenThen {
     val grupo2 = Grupo(List(mago))
 
     And("un heroe introvertido")
-    val ladron2 = Heroe(20, 10, 10, 20, Ladron(3), Bigote)
+    val ladron2 = Heroe(20, 10, 10, 20, Ladron(3), Bigote, criterio = Heroico)
 
     Then("le cae bien")
     ladron2.leAgradaGrupo(grupo2) shouldBe true
@@ -105,7 +105,7 @@ class SituacionesSpec extends AnyFlatSpec with GivenWhenThen {
     val grupo2 = Grupo(List(mago, ladron))
 
     And("un heroe bigote")
-    val ladron2 = Heroe(20, 10, 10, 20, Ladron(3), Bigote)
+    val ladron2 = Heroe(20, 10, 10, 20, Ladron(3), Bigote, criterio = Heroico)
 
     Then("no le cae bien")
     ladron2.leAgradaGrupo(grupo2) shouldBe false
@@ -117,7 +117,7 @@ class SituacionesSpec extends AnyFlatSpec with GivenWhenThen {
     val grupo2 = Grupo(List(mago, ladron), List(Banana))
 
     And("un heroe interesado en una 'Banana'")
-    val ladron2 = Heroe(20, 10, 10, 20, Ladron(3), Interesado(Banana))
+    val ladron2 = Heroe(20, 10, 10, 20, Ladron(3), Interesado(Banana), criterio = Heroico)
 
     Then("le cae bien")
     ladron2.leAgradaGrupo(grupo2) shouldBe true
@@ -129,7 +129,7 @@ class SituacionesSpec extends AnyFlatSpec with GivenWhenThen {
     val grupo2 = Grupo(List(mago, ladron), List(PlacaDeVideoGTX))
 
     And("un heroe interesado en una 'Banana'")
-    val ladron2 = Heroe(20, 10, 10, 20, Ladron(3), Interesado(Banana))
+    val ladron2 = Heroe(20, 10, 10, 20, Ladron(3), Interesado(Banana), criterio = Heroico)
 
     Then("no le cae bien")
     ladron2.leAgradaGrupo(grupo2) shouldBe false
@@ -140,7 +140,7 @@ class SituacionesSpec extends AnyFlatSpec with GivenWhenThen {
     val grupo2 = Grupo(List(mago, ladron))
 
     And("un heroe loquito")
-    val ladron2 = Heroe(20, 10, 10, 20, Ladron(3), Loquito)
+    val ladron2 = Heroe(20, 10, 10, 20, Ladron(3), Loquito, criterio = Heroico)
 
     Then("no le cae bien")
     ladron2.leAgradaGrupo(grupo2) shouldBe false
@@ -153,13 +153,13 @@ class SituacionesSpec extends AnyFlatSpec with GivenWhenThen {
     val _mago   = mago.copy(salud = 30)
     val _grupo  = Grupo(List(_mago, mago), List(Banana))
     And("un guerrero interesado en una 'Banana'")
-    val _enemigo = Heroe(velocidad = 10, _fuerza = 20, nivel = 10, salud = 20, trabajo = Guerrero, criterio = Interesado(Banana))
+    val _enemigo = Heroe(velocidad = 10, _fuerza = 20, nivel = 10, salud = 20, trabajo = Guerrero, personalidad = Interesado(Banana), criterio = Heroico)
 
     When("transcurre la situacion 'Encuentro' con el enemigo")
     val grupoDespuesSituacion = Encuentro(_enemigo)(_grupo)
 
     Then("el grupo tiene al guerrero")
-    grupoDespuesSituacion.integrantes.contains(_enemigo) shouldBe true
+    grupoDespuesSituacion.integrantes.last shouldBe _enemigo
   }
   
   //Test cuando pelean
@@ -170,7 +170,7 @@ class SituacionesSpec extends AnyFlatSpec with GivenWhenThen {
     val _ladron = ladron.copy(salud = 30)
     val _grupo  = Grupo(List(_mago, _ladron))
     And("un mago con 20 de fuerza")
-    val _enemigo = Heroe(velocidad = 10, _fuerza = 20, nivel = 10, salud = 20, trabajo = Mago(), criterio = Bigote)
+    val _enemigo = Heroe(velocidad = 10, _fuerza = 20, nivel = 10, salud = 20, trabajo = Mago(), personalidad = Bigote, criterio = Heroico)
 
     When("transcurre la situacion 'Encuentro' con el enemigo")
     val grupoDespuesSituacion = Encuentro(_enemigo)(_grupo)
@@ -185,7 +185,7 @@ class SituacionesSpec extends AnyFlatSpec with GivenWhenThen {
     val _ladron = ladron.copy(nivel = 9)
     val _grupo  = Grupo(List(_mago, _ladron))
     And("un enemigo con 10 de fuerza")
-    val _enemigo = Heroe(velocidad = 10, _fuerza = 5, nivel = 10, salud = 20, trabajo = Mago(), criterio = Bigote)
+    val _enemigo = Heroe(velocidad = 10, _fuerza = 5, nivel = 10, salud = 20, trabajo = Mago(), personalidad = Bigote, criterio = Heroico)
 
     When("transcurre la situacion")
     val grupoDespuesSituacion = Encuentro(_enemigo)(_grupo)
