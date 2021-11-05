@@ -1,6 +1,7 @@
 import scala.util.Try
 import scala.util.Failure
 import scala.util.Success
+import HeroesFunciones.{pasarPor, puntaje}
 case class Grupo( integrantes: List[Heroe], cofre: List[Item] = List.empty, puertasDescubiertas: List[Puerta] = List.empty, puertasAbiertas: List[Puerta] = List.empty) {
 
   def cantidadIntegrantes: Int = integrantes.size
@@ -43,28 +44,6 @@ case class Grupo( integrantes: List[Heroe], cofre: List[Item] = List.empty, puer
   def agregarIntegrante(heroe: Heroe): Grupo =
     this.copy(integrantes = this.integrantes :+ heroe)
 
-  def pasarPor(puerta: Puerta): Try[Grupo] = {
-    
-    if(!sabeAbrirPuerta(puerta)){
-      return Failure(new Exception(s"El grupo no logró abrir: ${puerta}"))
-    }
-
-    val grupoPostSituacion = puerta.habitacion.situacion.apply(this)
-    
-    if(grupoPostSituacion.integrantes.forall(_.estaMuerto)){
-      return Failure(new Exception(s"El grupo no logró pasar por la habitación: ${puerta.habitacion.situacion}"))
-    }
-
-    val nuevasPuertasDescubiertas = puertasDescubiertas ++ puerta.habitacion.puertas
-    val nuevasPuertasAbiertas     = puertasAbiertas :+ puerta
-    val nuevosIntegrantes         = grupoPostSituacion.integrantes.filter(!_.estaMuerto)
-    val nuevoGrupo                = grupoPostSituacion.copy(
-                                      puertasDescubiertas = nuevasPuertasDescubiertas, 
-                                      puertasAbiertas = nuevasPuertasAbiertas,
-                                      integrantes = nuevosIntegrantes
-                                    )
-    return Success(nuevoGrupo)
-  }
 
   def proximaPuerta(): Option[Puerta] = {
 
@@ -75,17 +54,10 @@ case class Grupo( integrantes: List[Heroe], cofre: List[Item] = List.empty, puer
       case (_, Nil) => None
       case (Heroico,  puertas :+ puerta ) => Some(puerta) // La última?
       case (Ordenado, puerta  :: puertas) => Some(puerta)
-      case (Vidente, puertas) => Some(puertas.maxBy(puerta => this.pasarPor(puerta).map(_.puntaje(this)).getOrElse(0)))
+      case (Vidente, puertas) => Some(puertas.maxBy(puerta => pasarPor(this, puerta).map(grupo => puntaje(this, grupo)).getOrElse(0)))
       case _ => None
     }
 
-  }
-
-  def puntaje(grupoOriginal: Grupo): Int = {
-    val muertos: Int = grupoOriginal.cantidadIntegrantes - cantidadIntegrantes
-    val vivos: Int = cantidadIntegrantes - muertos
-    val puntaje: Int = (vivos * 10) - (muertos * 5) + (this.cofre.size) + integrantes.maxBy(_.nivel).nivel
-    return puntaje
   }
 
 }
