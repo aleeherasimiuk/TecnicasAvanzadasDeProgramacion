@@ -80,13 +80,13 @@ class HeroesSpec extends AnyFlatSpec with GivenWhenThen with HeroeBehaviour {
     val heroe = Heroe(5, 3, 6, 100, Guerrero, Bigote)
 
     Then("validar que esta vivo")
-    assert(!heroe.estaMuerto)
+    heroe.estaMuerto shouldBe false
 
     And("puede subir de nivel")
-    assert(heroe.subirDeNivel()._nivel == 7)
+    heroe.subirDeNivel().nivel shouldBe 7
 
     And("deberia validar su trabajo")
-    assert(heroe.trabajo == Guerrero)
+    heroe.trabajo shouldBe Guerrero
 
   }
 
@@ -102,10 +102,10 @@ class HeroesSpec extends AnyFlatSpec with GivenWhenThen with HeroeBehaviour {
     val ladron = Heroe(5, 3, 6, 100, Ladron(2), Bigote)
 
     Then("el guerrero tiene una fuerza")
-    assert(guerrero.fuerza() == 11)
+    guerrero.fuerza() shouldBe 11
 
     And("y el ladron otra")
-    assert(ladron._fuerza == 5)
+    ladron._fuerza shouldBe 5
   }
 
   //Ladron
@@ -129,7 +129,7 @@ class HeroesSpec extends AnyFlatSpec with GivenWhenThen with HeroeBehaviour {
     val ladron = ladronConHabilidad(15)
 
     Then("puede abrir una puerta cerrada")
-    assert(ladron.sabeAbrirPuerta(PuertaCerrada))
+    ladron.sabeAbrirPuerta(PuertaCerrada) shouldBe true
   }
 
   it should "Con habilidad de 3 no puede abrir una puerta escondida" in {
@@ -137,7 +137,7 @@ class HeroesSpec extends AnyFlatSpec with GivenWhenThen with HeroeBehaviour {
     val ladron = ladronConHabilidad(3)
 
     Then("no puede abrir puerta escondida")
-    assert(!ladron.sabeAbrirPuerta(PuertaEscondida))
+    ladron.sabeAbrirPuerta(PuertaEscondida) shouldBe false
   }
 
   it should "Con habilidad 25 puede abrir una puerta compuesta con todos los tipos de puerta" in {
@@ -145,7 +145,7 @@ class HeroesSpec extends AnyFlatSpec with GivenWhenThen with HeroeBehaviour {
     val ladron = ladronConHabilidad(25)
 
     Then("puede abrir puerta compuesta")
-    assert(ladron.sabeAbrirPuerta(puertaCompuesta))
+    ladron.sabeAbrirPuerta(puertaCompuesta) shouldBe true
   }
 
   it should "Con habilidad 19 no puede abrir una puerta compuesta con todos los tipos de puerta" in {
@@ -153,7 +153,7 @@ class HeroesSpec extends AnyFlatSpec with GivenWhenThen with HeroeBehaviour {
     val ladron = ladronConHabilidad(19)
 
     Then("puede abrir puerta compuesta")
-    assert(!ladron.sabeAbrirPuerta(puertaCompuesta))
+    ladron.sabeAbrirPuerta(puertaCompuesta) shouldBe false
   }
 
   it should "Con habilidad 6 no puede abrir una puerta cerrada sin ganzuas" in {
@@ -161,10 +161,10 @@ class HeroesSpec extends AnyFlatSpec with GivenWhenThen with HeroeBehaviour {
     val ladron = ladronConHabilidad(6)
 
     Then("puede abrir una puerta cerrada con ganzuas")
-    assert(ladron.sabeAbrirPuerta(PuertaCerrada, List(Ganzúas)))
+    ladron.sabeAbrirPuerta(PuertaCerrada, List(Ganzúas)) shouldBe true
 
     And("No sin ellas")
-    assert(!ladron.sabeAbrirPuerta(PuertaCerrada))
+    ladron.sabeAbrirPuerta(PuertaCerrada) shouldBe false
   }
 
   //Mago
@@ -178,10 +178,10 @@ class HeroesSpec extends AnyFlatSpec with GivenWhenThen with HeroeBehaviour {
     val mago2 = magoConHechizos(List())
 
     Then("puede abrir una escondida")
-    assert(mago.sabeAbrirPuerta(PuertaEscondida))
+    mago.sabeAbrirPuerta(PuertaEscondida) shouldBe true
 
     And("sin el no puede abrirla")
-    assert(!mago2.sabeAbrirPuerta(PuertaEscondida))
+    mago2.sabeAbrirPuerta(PuertaEscondida) shouldBe false
 
   }
 
@@ -191,13 +191,13 @@ class HeroesSpec extends AnyFlatSpec with GivenWhenThen with HeroeBehaviour {
       magoConHechizos(List(Hechizo("Alohomora", 2), Hechizo("Abrakadabra", 20)))
 
     Then("puede abrir puerta encantada")
-    assert(mago.sabeAbrirPuerta(puertaEncantada))
+    mago.sabeAbrirPuerta(puertaEncantada) shouldBe true
 
     And("no sabe abrir una puerta de la que no conoce su hechizo")
-    assert(!mago.sabeAbrirPuerta(PuertaEncantada("Ábrete, sésamo")))
+    mago.sabeAbrirPuerta(PuertaEncantada("Ábrete, sésamo")) shouldBe false  
 
     And("tampoco sabe abrir una puerta la cual todavia no tiene el nivel")
-    assert(!mago.sabeAbrirPuerta(PuertaEncantada("Abrakadabra")))
+    mago.sabeAbrirPuerta(PuertaEncantada("Abrakadabra")) shouldBe false
 
   }
 
@@ -209,11 +209,11 @@ class HeroesSpec extends AnyFlatSpec with GivenWhenThen with HeroeBehaviour {
     Then(
       "puede abrir puerta compuesta que esta escondida y tiene hechizo de 'Alohomora'"
     )
-    assert(
-      mago.sabeAbrirPuerta(
-        PuertaCompuesta(List(PuertaEscondida, PuertaEncantada("Alohomora")))
-      )
-    )
+    
+    mago.sabeAbrirPuerta(
+      PuertaCompuesta(List(PuertaEscondida, PuertaEncantada("Alohomora")))
+    ) shouldBe true
+    
   }
 
   //Grupo
@@ -223,7 +223,7 @@ class HeroesSpec extends AnyFlatSpec with GivenWhenThen with HeroeBehaviour {
     val grupo = Grupo(List(mago, guerrero), List(Llave))
 
     Then("pueden abrir puerta cerrada")
-    assert(grupo.sabeAbrirPuerta(PuertaCerrada))
+    grupo.sabeAbrirPuerta(PuertaCerrada) shouldBe true
   }
 
   it should "con únicamente un ladrón con ganzúas puede abrir una puerta cerrada" in {
@@ -232,7 +232,7 @@ class HeroesSpec extends AnyFlatSpec with GivenWhenThen with HeroeBehaviour {
     val grupo = Grupo(List(ladron), List(Ganzúas))
 
     Then("pueden abrir puerta cerrada")
-    assert(grupo.sabeAbrirPuerta(PuertaCerrada))
+    grupo.sabeAbrirPuerta(PuertaCerrada) shouldBe true
   }
 
   it should "con un mago sin hechizos y un ladrón sin ganzúas no pueden abrir una puerta cerrada" in {
@@ -242,7 +242,7 @@ class HeroesSpec extends AnyFlatSpec with GivenWhenThen with HeroeBehaviour {
     val grupo = Grupo(List(mago, ladron), List.empty)
 
     Then("No pueden abrir una puerta cerrada")
-    assert(!grupo.sabeAbrirPuerta(PuertaCerrada))
+    grupo.sabeAbrirPuerta(PuertaCerrada) shouldBe false
   }
 
 }

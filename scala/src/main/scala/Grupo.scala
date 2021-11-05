@@ -19,7 +19,7 @@ case class Grupo( integrantes: List[Heroe], cofre: List[Item] = List.empty, puer
   def tieneItem(item: Item): Boolean = this.cofre.contains(item)
 
   def matarIntegranteMasLento(): Grupo = {
-    val integranteMasLento = integrantes.minBy(_._velocidad)
+    val integranteMasLento = integrantes.minBy(_.velocidad)
     val integrantesConElLentoMuerto = integrantes.map(integrante =>
       if (integrante.eq(integranteMasLento)) integrante.morirse()
       else integrante
