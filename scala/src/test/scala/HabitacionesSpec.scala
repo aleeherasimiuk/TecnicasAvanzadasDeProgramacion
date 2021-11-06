@@ -79,7 +79,7 @@ class HabitacionesSpec extends AnyFreeSpec{
     val grupoFinal = grupoOriginal.copy(integrantes = List(_guerrero))
 
     "El puntaje entre 2 grupos varia ya que tiene distinta cantidad de muertos" in {
-      //puntaje(grupoOriginal, grupoFinal) shouldBe 6 Falla y no se por que joraca
+      puntaje(grupoOriginal, grupoFinal) shouldBe 6
     }
 
   }

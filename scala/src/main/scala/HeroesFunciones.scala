@@ -37,7 +37,7 @@ object HeroesFunciones {
 
   def puntaje(grupoOriginal: Grupo, grupoFinal: Grupo): Int = {
     val muertos: Int = Math.max(grupoOriginal.cantidadIntegrantes - grupoFinal.cantidadIntegrantes, 0)
-    val vivos: Int   = grupoFinal.cantidadIntegrantes - muertos
+    val vivos: Int   = grupoFinal.cantidadIntegrantes
     val _puntaje: Int = (vivos * 10) - (muertos * 5) + (grupoFinal.cofre.size) + grupoFinal.integrantes.maxBy(_.nivel).nivel
     return _puntaje
   }
