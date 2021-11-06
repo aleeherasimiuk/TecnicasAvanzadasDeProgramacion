@@ -10,10 +10,10 @@ class HabitacionesSpec extends AnyFreeSpec{
     val mago = Heroe(_fuerza = 5, velocidad = 8, nivel = 1, salud = 50, trabajo = Mago(List.empty), personalidad = Loquito, criterio = Vidente)
     val ladron = Heroe(_fuerza = 20, velocidad = 30, nivel = 1, salud = 20, trabajo = Ladron(1), personalidad = Loquito, criterio = Ordenado)
 
-    val primerPuerta = PuertaNormal(habitacion = Habitacion(situacion = MuchosMuchosDardos, puertas = List.empty))
-    val puertaConMejorResultado = PuertaNormal(habitacion = Habitacion(situacion = NoPasaNada, puertas = List.empty))
-    val ultimaPuerta = PuertaNormal(habitacion = Habitacion(situacion = TrampaDeLeones, puertas = List.empty))
-    val puertaCerrada = PuertaCerrada(habitacion = Habitacion(situacion = NoPasaNada, puertas = List.empty))
+    val primerPuerta = PuertaNormal(habitacion = Aventura(situacion = MuchosMuchosDardos, puertas = List.empty))
+    val puertaConMejorResultado = PuertaNormal(habitacion = Aventura(situacion = NoPasaNada, puertas = List.empty))
+    val ultimaPuerta = PuertaNormal(habitacion = Aventura(situacion = TrampaDeLeones, puertas = List.empty))
+    val puertaCerrada = PuertaCerrada(habitacion = Aventura(situacion = NoPasaNada, puertas = List.empty))
     
     "Un grupo con un lider heroico" - {
       val grupoHeroico = Grupo(integrantes = List(guerrero, mago, ladron), puertasDescubiertas = List(ultimaPuerta, puertaConMejorResultado, primerPuerta, puertaCerrada), puertasAbiertas = List.empty)
@@ -50,7 +50,7 @@ class HabitacionesSpec extends AnyFreeSpec{
     val guerrero = Heroe(_fuerza = 40, velocidad = 10, nivel = 1, salud = 5, trabajo = Guerrero, personalidad = Loquito, criterio = Heroico)
     val ladron = Heroe(_fuerza = 20, velocidad = 30, nivel = 1, salud = 5, trabajo = Guerrero, personalidad = Loquito, criterio = Ordenado)
 
-    val primerPuerta = PuertaNormal(habitacion = Habitacion(situacion = MuchosMuchosDardos, puertas = List.empty))
+    val primerPuerta = PuertaNormal(habitacion = Aventura(situacion = MuchosMuchosDardos, puertas = List.empty))
 
     "Un grupo con poca salud cunado pase por la puerta no  va a poder lidiar con la situacion" - {
       val grupoNoPasable = Grupo(integrantes = List(guerrero, ladron), puertasDescubiertas = List.empty, puertasAbiertas = List.empty)

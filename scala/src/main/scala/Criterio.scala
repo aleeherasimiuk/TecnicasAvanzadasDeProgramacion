@@ -1,6 +1,4 @@
-trait Criterio {
-  
-}
+sealed trait Criterio
 
 case object Heroico extends Criterio
 case object Ordenado extends Criterio

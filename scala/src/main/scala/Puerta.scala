@@ -1,3 +1,5 @@
+import Aventura.Habitacion
+
 sealed trait Puerta{
   def habitacion : Habitacion
 }

@@ -44,12 +44,13 @@ case class Grupo( integrantes: List[Heroe], cofre: List[Item] = List.empty, puer
   def agregarIntegrante(heroe: Heroe): Grupo =
     this.copy(integrantes = this.integrantes :+ heroe)
 
-
+//Llevar a funcion
   def proximaPuerta(): Option[Puerta] = {
 
-    val puertasPosibles = this.puertasDescubiertas.filter(this.sabeAbrirPuerta(_))
+    val puertasPosibles = this.puertasDescubiertas.filter(this.sabeAbrirPuerta(_))  //Capaz una funcion en la que se cambie de estado
     val criterioDelLider = this.lider.criterio
 
+    //Delegarlo a los criterios
     (criterioDelLider, puertasPosibles) match {
       case (_, Nil) => None
       case (Heroico,  puertas :+ puerta ) => Some(puerta) // La última?
