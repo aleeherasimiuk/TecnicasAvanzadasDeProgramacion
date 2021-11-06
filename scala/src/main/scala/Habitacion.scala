@@ -1,3 +1,3 @@
-case class Habitacion(puertas: List[Puerta], situacion: Situacion) {
+case class Habitacion(situacion: Situacion, puertas: List[Puerta]){
 
 }

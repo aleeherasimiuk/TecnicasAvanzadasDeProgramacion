@@ -1,15 +1,15 @@
-case class Heroe(val _fuerza: Double, val velocidad: Int, val nivel: Int, val salud: Int, trabajo: Trabajo, criterio: Criterio) {
+case class Heroe(val _fuerza: Double, val velocidad: Int, val nivel: Int, val salud: Int, trabajo: Trabajo, personalidad: Personalidad, criterio: Criterio) {
 
   def estaMuerto: Boolean = salud <= 0
 
   def sabeAbrirPuerta(puerta: Puerta, cofre: List[Item] = List.empty): Boolean = (puerta,trabajo) match {
-    case (PuertaNormal,_) => true
+    case (PuertaNormal(_),_) => true
     case (_, Ladron(habilidad)) if habilidad >= 20 => true
-    case (PuertaCerrada,_) if cofre.contains(Llave) => true
-    case (PuertaCerrada, Ladron(habilidad)) => habilidad >= 10 || cofre.contains(Ganzúas)
-    case (PuertaEscondida, mago: Mago) => mago.conoceHechizo("Vislumbrar", this.nivel)
-    case (PuertaEscondida, Ladron(habilidad)) => habilidad >= 6
-    case (PuertaEncantada(hechizoPuerta), mago: Mago) => mago.conoceHechizo(hechizoPuerta, this.nivel)
+    case (PuertaCerrada(_),_) if cofre.contains(Llave) => true
+    case (PuertaCerrada(_), Ladron(habilidad)) => habilidad >= 10 || cofre.contains(Ganzúas)
+    case (PuertaEscondida(_), mago: Mago) => mago.conoceHechizo("Vislumbrar", this.nivel)
+    case (PuertaEscondida(_), Ladron(habilidad)) => habilidad >= 6
+    case (PuertaEncantada(_, hechizoPuerta), mago: Mago) => mago.conoceHechizo(hechizoPuerta, this.nivel)
     case (puertaComp: PuertaCompuesta, _) => puedePuertaCompuesta(puertaComp, cofre)
     case _ => false
   }
@@ -29,7 +29,7 @@ case class Heroe(val _fuerza: Double, val velocidad: Int, val nivel: Int, val sa
   }
 
   def leAgradaGrupo(unGrupo: Grupo): Boolean = {
-    criterio.leAgradaElGrupo(unGrupo)
+    personalidad.leAgradaElGrupo(unGrupo)
   }
 
 }
