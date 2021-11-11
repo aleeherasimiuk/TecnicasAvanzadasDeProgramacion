@@ -36,9 +36,10 @@ class HabitacionesSpec extends AnyFreeSpec{
 
     "Un grupo con un lider vidente" - {
       val grupoVidente = Grupo(integrantes = List(mago, ladron, guerrero))
-      val recorrido = Recorrido(grupoVidente, null, puertasDescubiertas = List(ultimaPuerta, puertaConMejorResultado, primerPuerta), puertasAbiertas = List.empty)
+      val recorrido = Recorrido(grupoVidente, null, puertasDescubiertas = List(ultimaPuerta, puertaConMejorResultado), puertasAbiertas = List.empty)
+      val puerta = proximaPuerta(recorrido).get
       "elige la puerta con mejor resultado" in {
-        proximaPuerta(recorrido).get shouldBe puertaConMejorResultado
+        puerta shouldBe puertaConMejorResultado
       }
     }
 

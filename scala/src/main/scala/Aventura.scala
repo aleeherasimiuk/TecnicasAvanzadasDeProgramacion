@@ -14,7 +14,7 @@ object Recorrido{
 
   def abrirPuerta(recorrido: Recorrido, puerta: Puerta): Aventura = {
 
-    if(recorrido.grupo.sabeAbrirPuerta(puerta)){
+    if(!recorrido.grupo.sabeAbrirPuerta(puerta)){
       return Fracaso(recorrido, new Exception(s"El grupo no logró abrir: ${puerta}"))
     }
 
@@ -34,17 +34,18 @@ object Recorrido{
   }
 
   def desecharALosMuertos(recorrido: Recorrido): Aventura = {
-    val integrantes = recorrido.grupo.integrantes.filter(_.estaMuerto)
+    val integrantes = recorrido.grupo.integrantes.filterNot(_.estaMuerto)
     return Pendiente(recorrido.copy(grupo = recorrido.grupo.copy(integrantes = integrantes)))
   }
 
   def pasarPor(recorrido: Recorrido, puerta: Puerta): Aventura = {
-    for{
+    val aventura = for{
       a1 <- abrirPuerta(recorrido, puerta)
       a2 <- pasarLaSituacion(a1, puerta)
       a3 <- desecharALosMuertos(a2)
     } yield a3
-    
+
+    return aventura
   }
 }
 
