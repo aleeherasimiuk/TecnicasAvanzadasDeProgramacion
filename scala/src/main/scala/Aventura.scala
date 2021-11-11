@@ -2,9 +2,10 @@ import Heroe.{pelear, seAgradan}
 import Situaciones._
 import scala.util.Success
 import scala.util.Failure
+import Habitaciones._
 
-case class Recorrido(grupo: Grupo, calabozo: Calabozo, puertasDescubiertas: List[Puerta], puertasAbiertas: List[Puerta]) 
-case class Habitacion(situacion: Situacion, puertas: List[Puerta])
+case class Recorrido(grupo: Grupo, calabozo: Calabozo, puertasDescubiertas: List[Puerta], puertasAbiertas: List[Puerta])
+
 case class Calabozo(entrada: Puerta)
 
 object Recorrido{
@@ -24,6 +25,8 @@ object Recorrido{
     return Pendiente(recorrido.copy(puertasDescubiertas = puertasDescubiertas, puertasAbiertas = puertasAbiertas))
   }
 
+  def intentarSalir(recorrido: Recorrido, puerta: Puerta): Aventura = if (puerta.esSalida) Exito(recorrido) else Pendiente(recorrido)
+
   def pasarLaSituacion(recorrido: Recorrido, puerta: Puerta): Aventura = {
     val grupoPostSituacion = puerta.habitacion.situacion.apply(recorrido.grupo)
     
@@ -41,9 +44,10 @@ object Recorrido{
   def pasarPor(recorrido: Recorrido, puerta: Puerta): Aventura = {
     val aventura = for{
       a1 <- abrirPuerta(recorrido, puerta)
-      a2 <- pasarLaSituacion(a1, puerta)
-      a3 <- desecharALosMuertos(a2)
-    } yield a3
+      a2 <- intentarSalir(a1, puerta)
+      a3 <- pasarLaSituacion(a2, puerta)
+      a4 <- desecharALosMuertos(a3)
+    } yield a4
 
     return aventura
   }
@@ -65,8 +69,8 @@ object Aventura{
 }
 
 case class Exito(recorrido: Recorrido) extends Aventura{
-  def map(f: Recorrido => Recorrido): Aventura = Exito(f(recorrido))
-  def flatMap(f: Recorrido => Aventura): Aventura = f(recorrido)
+  def map(f: Recorrido => Recorrido): Aventura = this
+  def flatMap(f: Recorrido => Aventura): Aventura = this
 }
 
 case class Fracaso(recorrido: Recorrido, error: Exception) extends Aventura{

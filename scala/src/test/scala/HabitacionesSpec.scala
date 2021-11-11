@@ -6,6 +6,7 @@ import Aventura._
 import Situaciones._
 import Recorrido._
 import Grupo.puntaje
+import Habitaciones._
 class HabitacionesSpec extends AnyFreeSpec{
 
   "Proximas puertas" - { 
@@ -59,6 +60,7 @@ class HabitacionesSpec extends AnyFreeSpec{
     val ladron = Heroe(_fuerza = 20, velocidad = 30, nivel = 1, salud = 5, trabajo = Guerrero, personalidad = Loquito, criterio = Ordenado)
 
     val primerPuerta = PuertaNormal(habitacion = Habitacion(situacion = MuchosMuchosDardos, puertas = List.empty))
+    val puertaSalida = PuertaNormal(esSalida = true)
 
     "Un grupo con poca salud cunado pase por la puerta no  va a poder lidiar con la situacion" in {
       val grupoNoPasable = Grupo(integrantes = List(guerrero, ladron))
@@ -84,6 +86,15 @@ class HabitacionesSpec extends AnyFreeSpec{
       
       val aventura = pasarPor(recorrido, primerPuerta)
       aventura shouldBe a [Pendiente] // TODO: Debería ser Exitoso?
+    }
+
+    "Un grupo pasa por una puerta marcada como salida" in {
+
+      val grupoPasable = Grupo(integrantes = List(guerrero))
+      val recorrido = Recorrido(grupoPasable, null, puertasDescubiertas = List(puertaSalida), puertasAbiertas = List.empty)
+      
+      val aventura = pasarPor(recorrido, puertaSalida)
+      aventura shouldBe a [Exito]
     }
 
   }

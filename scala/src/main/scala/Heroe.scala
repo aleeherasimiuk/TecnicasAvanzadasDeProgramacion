@@ -6,13 +6,13 @@ case class Heroe(val _fuerza: Double, val velocidad: Int, val nivel: Int, val sa
   def estaMuerto: Boolean = salud <= 0
 
   def sabeAbrirPuerta(puerta: Puerta, cofre: List[Item] = List.empty): Boolean = (puerta,trabajo) match {
-    case (PuertaNormal(_),_) => true
+    case (PuertaNormal(_, _), _) => true
     case (_, Ladron(habilidad)) if habilidad >= 20 => true
-    case (PuertaCerrada(_),_) if cofre.contains(Llave) => true
-    case (PuertaCerrada(_), Ladron(habilidad)) => habilidad >= 10 || cofre.contains(Ganzúas)
-    case (PuertaEscondida(_), mago: Mago) => mago.conoceHechizo("Vislumbrar", this.nivel)
-    case (PuertaEscondida(_), Ladron(habilidad)) => habilidad >= 6
-    case (PuertaEncantada(_, hechizoPuerta), mago: Mago) => mago.conoceHechizo(hechizoPuerta, this.nivel)
+    case (PuertaCerrada(_, _), _) if cofre.contains(Llave) => true
+    case (PuertaCerrada(_, _), Ladron(habilidad)) => habilidad >= 10 || cofre.contains(Ganzúas)
+    case (PuertaEscondida(_, _), mago: Mago) => mago.conoceHechizo("Vislumbrar", this.nivel)
+    case (PuertaEscondida(_, _), Ladron(habilidad)) => habilidad >= 6
+    case (PuertaEncantada(_, hechizoPuerta, _), mago: Mago) => mago.conoceHechizo(hechizoPuerta, this.nivel)
     case (puertaComp: PuertaCompuesta, _) => puedePuertaCompuesta(puertaComp, cofre)
     case _ => false
   }
