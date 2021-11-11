@@ -1,29 +1,84 @@
-import HeroesFunciones.{pelear, seAgradan}
+import Heroe.{pelear, seAgradan}
+import Situaciones._
+import scala.util.Success
+import scala.util.Failure
+import Habitaciones._
 
-object Aventura {
+case class Recorrido(grupo: Grupo, calabozo: Calabozo, puertasDescubiertas: List[Puerta], puertasAbiertas: List[Puerta])
 
+case class Calabozo(entrada: Puerta)
 
-  case class Habitacion(situacion: Situacion, puertas: List[Puerta])
-
-  type Situacion = Grupo => Grupo
-
-  case object NoPasaNada extends Situacion {
-    override def apply(grupo: Grupo): Grupo = grupo
+object Recorrido{
+  def proximaPuerta(recorrido: Recorrido): Option[Puerta] = {
+    recorrido.grupo.lider.criterio.proximaPuerta(recorrido)
   }
 
-  case object MuchosMuchosDardos extends Situacion {
-    override def apply(grupo: Grupo): Grupo = grupo.lastimarIntegrantes(10)
+  def abrirPuerta(recorrido: Recorrido, puerta: Puerta): Aventura = {
+
+    if(!recorrido.grupo.sabeAbrirPuerta(puerta)){
+      return Fracaso(recorrido, new Exception(s"El grupo no logró abrir: ${puerta}"))
+    }
+
+    val puertasDescubiertas: List[Puerta] = recorrido.puertasDescubiertas ++ puerta.habitacion.puertas
+    val puertasAbiertas = recorrido.puertasAbiertas :+ puerta
+
+    return Pendiente(recorrido.copy(puertasDescubiertas = puertasDescubiertas, puertasAbiertas = puertasAbiertas))
   }
 
-  case class TesoroPerdido(item: Item) extends Situacion {
-    override def apply(grupo: Grupo): Grupo = grupo.obtenerItem(item)
+  def intentarSalir(recorrido: Recorrido, puerta: Puerta): Aventura = if (puerta.esSalida) Exito(recorrido) else Pendiente(recorrido)
+
+  def pasarLaSituacion(recorrido: Recorrido, puerta: Puerta): Aventura = {
+    val grupoPostSituacion = puerta.habitacion.situacion.apply(recorrido.grupo)
+    
+    if(grupoPostSituacion.integrantes.forall(_.estaMuerto)){
+      return Fracaso(recorrido, new Exception(s"El grupo no logró pasar por la habitación: ${puerta.habitacion.situacion}"))
+    }
+    return Pendiente(recorrido.copy(grupo = grupoPostSituacion))
   }
 
-  case object TrampaDeLeones extends Situacion {
-    override def apply(grupo: Grupo): Grupo = grupo.matarIntegranteMasLento()
+  def desecharALosMuertos(recorrido: Recorrido): Aventura = {
+    val integrantes = recorrido.grupo.integrantes.filterNot(_.estaMuerto)
+    return Pendiente(recorrido.copy(grupo = recorrido.grupo.copy(integrantes = integrantes)))
   }
 
-  case class Encuentro(heroe: Heroe) extends Situacion {
-    override def apply(grupo: Grupo): Grupo = if (seAgradan(heroe, grupo)) grupo.agregarIntegrante(heroe) else pelear(heroe, grupo)
+  def pasarPor(recorrido: Recorrido, puerta: Puerta): Aventura = {
+    val aventura = for{
+      a1 <- abrirPuerta(recorrido, puerta)
+      a2 <- intentarSalir(a1, puerta)
+      a3 <- pasarLaSituacion(a2, puerta)
+      a4 <- desecharALosMuertos(a3)
+    } yield a4
+
+    return aventura
   }
+}
+
+
+sealed trait Aventura{
+  def recorrido: Recorrido
+  def map(f: Recorrido => Recorrido): Aventura
+  def flatMap(f: Recorrido => Aventura): Aventura
+}
+
+object Aventura{
+  def apply(recorrido: => Recorrido): Aventura = try {
+    Exito(recorrido)
+  } catch {
+    case e: Exception => Fracaso(recorrido, e)
+  }
+}
+
+case class Exito(recorrido: Recorrido) extends Aventura{
+  def map(f: Recorrido => Recorrido): Aventura = this
+  def flatMap(f: Recorrido => Aventura): Aventura = this
+}
+
+case class Fracaso(recorrido: Recorrido, error: Exception) extends Aventura{
+  def map(f: Recorrido => Recorrido) = this
+  def flatMap(f: Recorrido => Aventura) = this
+}
+
+case class Pendiente(recorrido: Recorrido) extends Aventura{
+  def map(f: Recorrido => Recorrido): Aventura = Pendiente(f(recorrido))
+  def flatMap(f: Recorrido => Aventura): Aventura = f(recorrido)
 }

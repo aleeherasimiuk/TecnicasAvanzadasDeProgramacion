@@ -1,6 +1,7 @@
 import org.scalatest.{BeforeAndAfter, GivenWhenThen}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers._
+import Situaciones._
 
 class SituacionesSpec extends AnyFlatSpec with GivenWhenThen {
   behavior of "Una situación"
