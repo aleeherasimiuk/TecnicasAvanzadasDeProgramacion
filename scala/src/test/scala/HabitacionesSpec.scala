@@ -2,7 +2,6 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers._
 import scala.util.Success
 import scala.util.Try
-import Aventura._
 import Situaciones._
 import Recorrido._
 import Grupo.puntaje
@@ -67,7 +66,7 @@ class HabitacionesSpec extends AnyFreeSpec{
       val recorrido = Recorrido(grupoNoPasable, null, puertasDescubiertas = List.empty, puertasAbiertas = List.empty)
 
       val aventura = pasarPor(recorrido, primerPuerta)
-      aventura shouldBe a [Fracaso]
+      aventura shouldBe a [TodosMuertos]
     }
 
     /*

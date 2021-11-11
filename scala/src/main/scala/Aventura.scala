@@ -4,9 +4,8 @@ import scala.util.Success
 import scala.util.Failure
 import Habitaciones._
 
-case class Recorrido(grupo: Grupo, calabozo: Calabozo, puertasDescubiertas: List[Puerta], puertasAbiertas: List[Puerta])
-
 case class Calabozo(entrada: Puerta)
+case class Recorrido(grupo: Grupo, calabozo: Calabozo, puertasDescubiertas: List[Puerta], puertasAbiertas: List[Puerta])
 
 object Recorrido{
   def proximaPuerta(recorrido: Recorrido): Option[Puerta] = {
@@ -15,8 +14,8 @@ object Recorrido{
 
   def abrirPuerta(recorrido: Recorrido, puerta: Puerta): Aventura = {
 
-    if(!recorrido.grupo.sabeAbrirPuerta(puerta)){
-      return Fracaso(recorrido, new Exception(s"El grupo no logró abrir: ${puerta}"))
+    if(!recorrido.grupo.sabeAbrirPuerta(puerta)){   /* Solo para tests */
+      throw new RuntimeException(s"El grupo no sabe abrir: ${puerta}")
     }
 
     val puertasDescubiertas: List[Puerta] = recorrido.puertasDescubiertas ++ puerta.habitacion.puertas
@@ -31,7 +30,7 @@ object Recorrido{
     val grupoPostSituacion = puerta.habitacion.situacion.apply(recorrido.grupo)
     
     if(grupoPostSituacion.integrantes.forall(_.estaMuerto)){
-      return Fracaso(recorrido, new Exception(s"El grupo no logró pasar por la habitación: ${puerta.habitacion.situacion}"))
+      return TodosMuertos(recorrido, new Exception(s"El grupo no logró pasar por la habitación: ${puerta.habitacion.situacion}"))
     }
     return Pendiente(recorrido.copy(grupo = grupoPostSituacion))
   }
@@ -51,6 +50,21 @@ object Recorrido{
 
     return aventura
   }
+
+  def recorrerCalabozo(aventura: Aventura): Aventura = {
+    val recorrido = aventura.recorrido
+
+    aventura match {
+      case Pendiente(_) => {
+        val proxPuerta: Option[Puerta] = proximaPuerta(recorrido)
+        proxPuerta match {
+          case Some(p) => recorrerCalabozo(pasarPor(recorrido, p))
+          case None => Encerrados(recorrido, new Exception("No hay puertas para abrir"))
+        }
+      }
+      case _ => aventura
+    }
+  }
 }
 
 
@@ -60,20 +74,17 @@ sealed trait Aventura{
   def flatMap(f: Recorrido => Aventura): Aventura
 }
 
-object Aventura{
-  def apply(recorrido: => Recorrido): Aventura = try {
-    Exito(recorrido)
-  } catch {
-    case e: Exception => Fracaso(recorrido, e)
-  }
-}
-
 case class Exito(recorrido: Recorrido) extends Aventura{
   def map(f: Recorrido => Recorrido): Aventura = this
   def flatMap(f: Recorrido => Aventura): Aventura = this
 }
 
-case class Fracaso(recorrido: Recorrido, error: Exception) extends Aventura{
+case class Encerrados(recorrido: Recorrido, error: Exception) extends Aventura{
+  def map(f: Recorrido => Recorrido) = this
+  def flatMap(f: Recorrido => Aventura) = this
+}
+
+case class TodosMuertos(recorrido: Recorrido, error: Exception) extends Aventura{
   def map(f: Recorrido => Recorrido) = this
   def flatMap(f: Recorrido => Aventura) = this
 }
