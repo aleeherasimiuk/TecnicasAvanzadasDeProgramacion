@@ -1,8 +1,7 @@
 import scala.util.Try
 import scala.util.Failure
 import scala.util.Success
-import HeroesFunciones.{pasarPor, puntaje}
-case class Grupo( integrantes: List[Heroe], cofre: List[Item] = List.empty, puertasDescubiertas: List[Puerta] = List.empty, puertasAbiertas: List[Puerta] = List.empty) {
+case class Grupo( integrantes: List[Heroe], cofre: List[Item] = List.empty) {
 
   def cantidadIntegrantes: Int = integrantes.size
 
@@ -44,21 +43,13 @@ case class Grupo( integrantes: List[Heroe], cofre: List[Item] = List.empty, puer
   def agregarIntegrante(heroe: Heroe): Grupo =
     this.copy(integrantes = this.integrantes :+ heroe)
 
-//Llevar a funcion
-  def proximaPuerta(): Option[Puerta] = {
+}
 
-    val puertasPosibles = this.puertasDescubiertas.filter(this.sabeAbrirPuerta(_))  //Capaz una funcion en la que se cambie de estado
-    val criterioDelLider = this.lider.criterio
-
-    //Delegarlo a los criterios
-    (criterioDelLider, puertasPosibles) match {
-      case (_, Nil) => None
-      case (Heroico,  puertas :+ puerta ) => Some(puerta) // La última?
-      case (Ordenado, puerta  :: puertas) => Some(puerta)
-      case (Vidente, puertas) => Some(puertas.maxBy(puerta => pasarPor(this, puerta).map(grupo => puntaje(this, grupo)).getOrElse(0)))
-      case _ => None
-    }
-
+object Grupo {
+  def puntaje(grupoOriginal: Grupo, grupoFinal: Grupo): Int = {
+    val muertos: Int = Math.max(grupoOriginal.cantidadIntegrantes - grupoFinal.cantidadIntegrantes, 0)
+    val vivos: Int   = grupoFinal.cantidadIntegrantes
+    val _puntaje: Int = (vivos * 10) - (muertos * 5) + (grupoFinal.cofre.size) + grupoFinal.integrantes.maxBy(_.nivel).nivel
+    return _puntaje
   }
-
 }

@@ -1,3 +1,6 @@
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
 case class Heroe(val _fuerza: Double, val velocidad: Int, val nivel: Int, val salud: Int, trabajo: Trabajo, personalidad: Personalidad, criterio: Criterio) {
 
   def estaMuerto: Boolean = salud <= 0
@@ -32,4 +35,15 @@ case class Heroe(val _fuerza: Double, val velocidad: Int, val nivel: Int, val sa
     personalidad.leAgradaElGrupo(unGrupo)
   }
 
+}
+
+object Heroe {
+
+  def seAgradan(unHeroe: Heroe, grupo: Grupo): Boolean = {
+    val grupoConHeroe = grupo.agregarIntegrante(unHeroe)
+    unHeroe.leAgradaGrupo(grupo) && grupo.lider.leAgradaGrupo(grupoConHeroe)
+  }
+
+  def pelear(unHeroe: Heroe, grupo: Grupo): Grupo = if (grupo.fuerzaTotal() > unHeroe.fuerza()) grupo.subirNivel() else grupo.recibirDanio(unHeroe.fuerza())
+  
 }
