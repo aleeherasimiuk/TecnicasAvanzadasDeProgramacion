@@ -21,7 +21,7 @@ object Recorrido{
     val puertasDescubiertas: List[Puerta] = recorrido.puertasDescubiertas ++ puerta.habitacion.puertas
     val puertasAbiertas = recorrido.puertasAbiertas :+ puerta
 
-    return Pendiente(recorrido.copy(puertasDescubiertas = puertasDescubiertas, puertasAbiertas = puertasAbiertas))
+    Pendiente(recorrido.copy(puertasDescubiertas = puertasDescubiertas, puertasAbiertas = puertasAbiertas))
   }
 
   def intentarSalir(recorrido: Recorrido, puerta: Puerta): Aventura = if (puerta.esSalida) Exito(recorrido) else Pendiente(recorrido)
@@ -32,12 +32,12 @@ object Recorrido{
     if(grupoPostSituacion.integrantes.forall(_.estaMuerto)){
       return TodosMuertos(recorrido)
     }
-    return Pendiente(recorrido.copy(grupo = grupoPostSituacion))
+    Pendiente(recorrido.copy(grupo = grupoPostSituacion))
   }
 
-  def desecharALosMuertos(recorrido: Recorrido): Aventura = {
+  def desecharALosMuertos(recorrido: Recorrido): Recorrido = {
     val integrantes = recorrido.grupo.integrantes.filterNot(_.estaMuerto)
-    return Pendiente(recorrido.copy(grupo = recorrido.grupo.copy(integrantes = integrantes)))
+    recorrido.copy(grupo = recorrido.grupo.copy(integrantes = integrantes))
   }
 
   def pasarPor(recorrido: Recorrido, puerta: Puerta): Aventura = {
@@ -45,10 +45,9 @@ object Recorrido{
       a1 <- abrirPuerta(recorrido, puerta)
       a2 <- intentarSalir(a1, puerta)
       a3 <- pasarLaSituacion(a2, puerta)
-      a4 <- desecharALosMuertos(a3)
-    } yield a4
+    } yield desecharALosMuertos(a3)
 
-    return aventura
+    aventura
   }
 
   def recorrerCalabozo(aventura: Aventura): Aventura = {
