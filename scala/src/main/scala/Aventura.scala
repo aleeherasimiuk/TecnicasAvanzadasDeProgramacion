@@ -4,9 +4,8 @@ import scala.util.Success
 import scala.util.Failure
 import Habitaciones._
 
-case class Recorrido(grupo: Grupo, calabozo: Calabozo, puertasDescubiertas: List[Puerta], puertasAbiertas: List[Puerta])
-
 case class Calabozo(entrada: Puerta)
+case class Recorrido(grupo: Grupo, calabozo: Calabozo, puertasDescubiertas: List[Puerta], puertasAbiertas: List[Puerta])
 
 object Recorrido{
   def proximaPuerta(recorrido: Recorrido): Option[Puerta] = {
@@ -15,14 +14,14 @@ object Recorrido{
 
   def abrirPuerta(recorrido: Recorrido, puerta: Puerta): Aventura = {
 
-    if(!recorrido.grupo.sabeAbrirPuerta(puerta)){
-      return Fracaso(recorrido, new Exception(s"El grupo no logró abrir: ${puerta}"))
+    if(!recorrido.grupo.sabeAbrirPuerta(puerta)){   /* Solo para tests */
+      throw new RuntimeException(s"El grupo no sabe abrir: ${puerta}")
     }
 
     val puertasDescubiertas: List[Puerta] = recorrido.puertasDescubiertas ++ puerta.habitacion.puertas
     val puertasAbiertas = recorrido.puertasAbiertas :+ puerta
 
-    return Pendiente(recorrido.copy(puertasDescubiertas = puertasDescubiertas, puertasAbiertas = puertasAbiertas))
+    Pendiente(recorrido.copy(puertasDescubiertas = puertasDescubiertas, puertasAbiertas = puertasAbiertas))
   }
 
   def intentarSalir(recorrido: Recorrido, puerta: Puerta): Aventura = if (puerta.esSalida) Exito(recorrido) else Pendiente(recorrido)
@@ -31,14 +30,14 @@ object Recorrido{
     val grupoPostSituacion = puerta.habitacion.situacion.apply(recorrido.grupo)
     
     if(grupoPostSituacion.integrantes.forall(_.estaMuerto)){
-      return Fracaso(recorrido, new Exception(s"El grupo no logró pasar por la habitación: ${puerta.habitacion.situacion}"))
+      return TodosMuertos(recorrido)
     }
-    return Pendiente(recorrido.copy(grupo = grupoPostSituacion))
+    Pendiente(recorrido.copy(grupo = grupoPostSituacion))
   }
 
-  def desecharALosMuertos(recorrido: Recorrido): Aventura = {
+  def desecharALosMuertos(recorrido: Recorrido): Recorrido = {
     val integrantes = recorrido.grupo.integrantes.filterNot(_.estaMuerto)
-    return Pendiente(recorrido.copy(grupo = recorrido.grupo.copy(integrantes = integrantes)))
+    recorrido.copy(grupo = recorrido.grupo.copy(integrantes = integrantes))
   }
 
   def pasarPor(recorrido: Recorrido, puerta: Puerta): Aventura = {
@@ -46,10 +45,23 @@ object Recorrido{
       a1 <- abrirPuerta(recorrido, puerta)
       a2 <- intentarSalir(a1, puerta)
       a3 <- pasarLaSituacion(a2, puerta)
-      a4 <- desecharALosMuertos(a3)
-    } yield a4
+    } yield desecharALosMuertos(a3)
 
-    return aventura
+    aventura
+  }
+
+  def recorrerCalabozo(aventura: Aventura): Aventura = {
+    aventura match {
+      case PorEmpezar(recorrido) => recorrerCalabozo(pasarPor(recorrido, recorrido.calabozo.entrada))
+      case Pendiente(recorrido) => {
+        val proxPuerta: Option[Puerta] = proximaPuerta(recorrido)
+        proxPuerta match {
+          case Some(p) => recorrerCalabozo(pasarPor(recorrido, p))
+          case None => Encerrados(recorrido)
+        }
+      }
+      case _ => aventura
+    }
   }
 }
 
@@ -60,20 +72,17 @@ sealed trait Aventura{
   def flatMap(f: Recorrido => Aventura): Aventura
 }
 
-object Aventura{
-  def apply(recorrido: => Recorrido): Aventura = try {
-    Exito(recorrido)
-  } catch {
-    case e: Exception => Fracaso(recorrido, e)
-  }
-}
-
 case class Exito(recorrido: Recorrido) extends Aventura{
   def map(f: Recorrido => Recorrido): Aventura = this
   def flatMap(f: Recorrido => Aventura): Aventura = this
 }
 
-case class Fracaso(recorrido: Recorrido, error: Exception) extends Aventura{
+case class Encerrados(recorrido: Recorrido) extends Aventura{
+  def map(f: Recorrido => Recorrido) = this
+  def flatMap(f: Recorrido => Aventura) = this
+}
+
+case class TodosMuertos(recorrido: Recorrido) extends Aventura{
   def map(f: Recorrido => Recorrido) = this
   def flatMap(f: Recorrido => Aventura) = this
 }
@@ -82,3 +91,9 @@ case class Pendiente(recorrido: Recorrido) extends Aventura{
   def map(f: Recorrido => Recorrido): Aventura = Pendiente(f(recorrido))
   def flatMap(f: Recorrido => Aventura): Aventura = f(recorrido)
 }
+
+case class PorEmpezar(recorrido: Recorrido) extends Aventura{
+  def map(f: Recorrido => Recorrido): Aventura = Pendiente(f(recorrido))
+  def flatMap(f: Recorrido => Aventura): Aventura = f(recorrido)
+}
+
