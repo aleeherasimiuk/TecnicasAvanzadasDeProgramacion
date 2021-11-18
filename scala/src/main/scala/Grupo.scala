@@ -1,7 +1,6 @@
-import scala.util.Try
-import scala.util.Failure
-import scala.util.Success
-case class Grupo( integrantes: List[Heroe], cofre: List[Item] = List.empty) {
+import Grupo.Items
+
+case class Grupo( integrantes: List[Heroe], cofre: Items = List.empty) {
 
   def cantidadIntegrantes: Int = integrantes.size
 
@@ -46,10 +45,12 @@ case class Grupo( integrantes: List[Heroe], cofre: List[Item] = List.empty) {
 }
 
 object Grupo {
+  type Items = List[Item]
+
   def puntaje(grupoOriginal: Grupo, grupoFinal: Grupo): Int = {
     val muertos: Int = Math.max(grupoOriginal.cantidadIntegrantes - grupoFinal.cantidadIntegrantes, 0)
     val vivos: Int   = grupoFinal.cantidadIntegrantes
     val _puntaje: Int = (vivos * 10) - (muertos * 5) + (grupoFinal.cofre.size) + grupoFinal.integrantes.maxBy(_.nivel).nivel
-    return _puntaje
+    _puntaje
   }
 }
