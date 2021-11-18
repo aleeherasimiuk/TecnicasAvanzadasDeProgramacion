@@ -1,15 +1,14 @@
-import scala.util.Failure
-import scala.util.Success
-import scala.util.Try
-case class Heroe(val _fuerza: Double, val velocidad: Int, val nivel: Int, val salud: Int, trabajo: Trabajo, personalidad: Personalidad, criterio: Criterio) {
+import Grupo.Items
+
+case class Heroe(_fuerza: Double, velocidad: Int, nivel: Int, salud: Int, trabajo: Trabajo, personalidad: Personalidad, criterio: Criterio) {
 
   def estaMuerto: Boolean = salud <= 0
 
-  def sabeAbrirPuerta(puerta: Puerta, cofre: List[Item] = List.empty): Boolean = (puerta,trabajo) match {
+  def sabeAbrirPuerta(puerta: Puerta, cofre: Items = List.empty): Boolean = (puerta,trabajo) match {
     case (PuertaNormal(_, _), _) => true
     case (_, Ladron(habilidad)) if habilidad >= 20 => true
     case (PuertaCerrada(_, _), _) if cofre.contains(Llave) => true
-    case (PuertaCerrada(_, _), Ladron(habilidad)) => habilidad >= 10 || cofre.contains(Ganzúas)
+    case (PuertaCerrada(_, _), Ladron(habilidad)) => habilidad >= 10 || cofre.contains(Ganzuas)
     case (PuertaEscondida(_, _), mago: Mago) => mago.conoceHechizo("Vislumbrar", this.nivel)
     case (PuertaEscondida(_, _), Ladron(habilidad)) => habilidad >= 6
     case (PuertaEncantada(_, hechizoPuerta, _), mago: Mago) => mago.conoceHechizo(hechizoPuerta, this.nivel)
@@ -23,7 +22,7 @@ case class Heroe(val _fuerza: Double, val velocidad: Int, val nivel: Int, val sa
 
   def bajarSalud(cantidad: Int): Heroe = this.copy(salud = this.salud - cantidad)
 
-  def puedePuertaCompuesta(puertaComp: PuertaCompuesta, cofre: List[Item]): Boolean =
+  def puedePuertaCompuesta(puertaComp: PuertaCompuesta, cofre: Items): Boolean =
     puertaComp.puertas.foldRight(true) {(puerta,valorDeLaAnt) => this.sabeAbrirPuerta(puerta, cofre) && valorDeLaAnt }
 
   def fuerza(): Double = trabajo match {
@@ -45,5 +44,4 @@ object Heroe {
   }
 
   def pelear(unHeroe: Heroe, grupo: Grupo): Grupo = if (grupo.fuerzaTotal() > unHeroe.fuerza()) grupo.subirNivel() else grupo.recibirDanio(unHeroe.fuerza())
-  
 }

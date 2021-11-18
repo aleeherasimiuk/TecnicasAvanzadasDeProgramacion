@@ -1,5 +1,5 @@
-import Grupo._
 import Heroe.{seAgradan, pelear}
+
 package object Situaciones {
   type Situacion = Grupo => Grupo
 
