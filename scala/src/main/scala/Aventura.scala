@@ -2,7 +2,7 @@ case class Calabozo(entrada: Puerta)
 case class Recorrido(grupo: Grupo, calabozo: Calabozo, puertasDescubiertas: List[Puerta], puertasAbiertas: List[Puerta])
 
 object Recorrido{
-  def apply(grupo: Grupo, calabozo: Calabozo) =
+  def apply(grupo: Grupo, calabozo: Calabozo): Recorrido =
     Recorrido(grupo = grupo, calabozo = calabozo, puertasDescubiertas = List.empty, puertasAbiertas = List.empty)
 
   def proximaPuerta(recorrido: Recorrido): Option[Puerta] = {
@@ -15,10 +15,10 @@ object Recorrido{
     //      throw new RuntimeException(s"El grupo no sabe abrir: ${puerta}")
     //    }
 
-    val puertasDescubiertas: List[Puerta] = recorrido.puertasDescubiertas ++ puerta.habitacion.puertas
-    val puertasAbiertas = recorrido.puertasAbiertas :+ puerta
+    val _puertasDescubiertas: List[Puerta] = recorrido.puertasDescubiertas ++ puerta.habitacion.puertas 
+    val _puertasAbiertas = recorrido.puertasAbiertas :+ puerta
 
-    Pendiente(recorrido.copy(puertasDescubiertas = puertasDescubiertas, puertasAbiertas = puertasAbiertas))
+    Pendiente(recorrido.copy(puertasDescubiertas = _puertasDescubiertas, puertasAbiertas = _puertasAbiertas))
   }
 
   def intentarSalir(recorrido: Recorrido, puerta: Puerta): Aventura = if (puerta.esSalida) Exito(recorrido) else Pendiente(recorrido)

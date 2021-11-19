@@ -3,12 +3,16 @@ import Situaciones._
 
 sealed trait Puerta{
 
-  //def habitacion : Habitacion = HabitacionDummy
-  def situacion: Situacion = NoPasaNada
-  def puertas: List[Puerta]
-  def esSalida: Boolean = false
+  //def situacion: Situacion = NoPasaNada
+  // puertas: List[Puerta]
+  //def esSalida: Boolean = false
+
+  def habitacion : Habitacion
+  def esSalida: Boolean
+
 }
-case class PuertaCerrada(habitacion: Habitacion = HabitacionDummy, esSalida: Boolean = false) extends Puerta
+
+case class PuertaCerrada(habitacion: Habitacion = HabitacionDummy,esSalida: Boolean = false) extends Puerta
 case class PuertaNormal(habitacion: Habitacion = HabitacionDummy, esSalida: Boolean = false) extends Puerta
 case class PuertaEscondida(habitacion: Habitacion = HabitacionDummy, esSalida: Boolean = false) extends Puerta
 case class PuertaEncantada(habitacion: Habitacion = HabitacionDummy, hechizo: String, esSalida: Boolean = false) extends Puerta

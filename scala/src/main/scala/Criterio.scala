@@ -1,8 +1,10 @@
-import Recorrido.pasarPor
+import Recorrido.{abrirPuerta, pasarPor}
 import Grupo.puntaje
 sealed trait Criterio{
   def proximaPuerta(recorrido: Recorrido): Option[Puerta] = {
-    val puertasPosibles = recorrido.puertasDescubiertas.filter(recorrido.grupo.sabeAbrirPuerta)  //Capaz una funcion en la que se cambie de estado
+    val puertasPosibles = recorrido.puertasDescubiertas
+      .filterNot(p => recorrido.puertasAbiertas.contains(p))
+      .filter(recorrido.grupo.sabeAbrirPuerta)  //Capaz una funcion en la que se cambie de estado
     puertasPosibles match {
       case Nil => None
       case _ => aplicarCriterio(puertasPosibles, recorrido)
