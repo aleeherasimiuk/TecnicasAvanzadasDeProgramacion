@@ -53,7 +53,7 @@ class RecorridoSpec extends AnyFreeSpec{
     val julianAlvarez = Heroe(_fuerza = 5, velocidad = 9, nivel = 300, salud = 50, trabajo = Mago(List(Hechizo("escobazo", 250))), personalidad = Bigote, criterio = Vidente)
     val laChaqueña = Heroe(_fuerza = 20, velocidad = 30, nivel = 1, salud = 20, trabajo = Ladron(11), personalidad = Loquito, criterio = Ordenado)
     val barrosSchelotto = Heroe(_fuerza = 40, velocidad = 10, nivel = 1, salud = 10, trabajo = Guerrero, personalidad = Introvertido, criterio = Ordenado)
-    val quinteroYVaElTercero = Heroe(_fuerza = 5, velocidad = 8, nivel = 1, salud = 50, trabajo = Mago(List.empty), personalidad = Loquito, criterio = Vidente)
+    val pityMartinezYVaElTercero = Heroe(_fuerza = 5, velocidad = 8, nivel = 1, salud = 50, trabajo = Mago(List.empty), personalidad = Loquito, criterio = Vidente)
     val martinezQuarta = Heroe(_fuerza = 20, velocidad = 30, nivel = 1, salud = 20, trabajo = Ladron(11), personalidad = Introvertido, criterio = Ordenado)
     val marceloGallardo = Heroe(_fuerza = 40, velocidad = 10, nivel = 1, salud = 10, trabajo = Guerrero, personalidad = Introvertido, criterio = Ordenado)
     val villa = Heroe(_fuerza = 5, velocidad = 8, nivel = 1, salud = 50, trabajo = Mago(List.empty), personalidad = Loquito, criterio = Vidente)
@@ -80,7 +80,7 @@ class RecorridoSpec extends AnyFreeSpec{
     val puertaPentagonoMasDuraQueLaRealidad = PuertaCerrada(habitacion = Habitacion(situacion = TrampaDeLeones, puertas = List(unaRejaAbierta)))
 
     "Tienen que pasar porque son una banda" - {
-      val grupo = Grupo(integrantes = List(francoArmani, julianAlvarez, laChaqueña, barrosSchelotto, quinteroYVaElTercero, martinezQuarta, marceloGallardo, villa, messi, ansufati, vinicius, kaka, gaspi, daniAlves, kun, kratos), cofre = List(Llave))
+      val grupo = Grupo(integrantes = List(francoArmani, julianAlvarez, laChaqueña, barrosSchelotto, pityMartinezYVaElTercero, martinezQuarta, marceloGallardo, villa, messi, ansufati, vinicius, kaka, gaspi, daniAlves, kun, kratos), cofre = List(Llave))
       val calabozo = Calabozo(puertaPentagonoMasDuraQueLaRealidad)
       "Salen re piola" in {
         val aventuraFinal = grupoRecorreCalabozo(grupo, calabozo)
