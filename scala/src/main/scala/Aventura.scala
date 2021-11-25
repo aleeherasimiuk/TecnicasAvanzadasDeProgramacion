@@ -1,3 +1,4 @@
+import Grupo.puntaje
 case class Calabozo(entrada: Puerta)
 case class Recorrido(grupo: Grupo, calabozo: Calabozo, puertasDescubiertas: List[Puerta], puertasAbiertas: List[Puerta])
 
@@ -9,11 +10,17 @@ object Recorrido{
     recorrido.grupo.lider.criterio.proximaPuerta(recorrido)
   }
 
+  def mejorGrupo(grupos: List[Grupo], calabozo: Calabozo): Grupo = {
+
+    val grupoDespuesDelCalabozo = (grupo: Grupo) => grupoRecorreCalabozo(grupo, calabozo).recorrido.grupo
+
+    val gruposDespuesDelCalabozo = grupos.map(grupoDespuesDelCalabozo)
+    val tuplasGrupos = grupos.zip(gruposDespuesDelCalabozo)
+    val mejorGrupo = tuplasGrupos.maxBy(tupla => puntaje(tupla._1, tupla._2))
+    mejorGrupo._1
+  }
+
   def abrirPuerta(recorrido: Recorrido, puerta: Puerta): Aventura = {
-    // TODO: No estarian encerrados o sino pensar si deberia estar este chequeo..
-    //    if(!recorrido.grupo.sabeAbrirPuerta(puerta)){   /* Solo para tests */
-    //      throw new RuntimeException(s"El grupo no sabe abrir: ${puerta}")
-    //    }
 
     val _puertasDescubiertas: List[Puerta] = recorrido.puertasDescubiertas ++ puerta.habitacion.puertas 
     val _puertasAbiertas = recorrido.puertasAbiertas :+ puerta
@@ -66,6 +73,19 @@ object Recorrido{
     val aventuraInicial = Aventura(Recorrido(grupo, calabozo))
     recorrerCalabozo(aventuraInicial)
   }
+
+
+  def recorrerSubiendoNiveles(grupo: Grupo, calabozo: Calabozo, niveles: Int): Option[Int] = {
+    if (niveles == 20) return None
+    grupoRecorreCalabozo(grupo, calabozo) match {
+      case Exito(_) => Some(niveles)
+      case _ => recorrerSubiendoNiveles(grupo.subirNivel(), calabozo, niveles + 1)
+    }
+  }
+
+  def cuantosNivelesTieneQueSubir(grupo: Grupo, calabozo: Calabozo): Option[Int] = {
+    recorrerSubiendoNiveles(grupo, calabozo, 0)
+  }
 }
 
 object Aventura {
@@ -92,8 +112,9 @@ abstract class Terminado extends Aventura {
   def flatMap(f: Recorrido => Aventura) = this
 }
 
-case class Encerrados(recorrido: Recorrido) extends Terminado
 case class Exito(recorrido: Recorrido) extends Terminado
+
+case class Encerrados(recorrido: Recorrido) extends Terminado
 case class TodosMuertos(recorrido: Recorrido) extends Terminado
 
 
