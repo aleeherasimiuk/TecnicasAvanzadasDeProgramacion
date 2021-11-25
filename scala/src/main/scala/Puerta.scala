@@ -2,14 +2,8 @@ import Habitaciones._
 import Situaciones._
 
 sealed trait Puerta{
-
-  //def situacion: Situacion = NoPasaNada
-  // puertas: List[Puerta]
-  //def esSalida: Boolean = false
-
   def habitacion : Habitacion
   def esSalida: Boolean
-
 }
 
 case class PuertaCerrada(habitacion: Habitacion = HabitacionDummy,esSalida: Boolean = false) extends Puerta

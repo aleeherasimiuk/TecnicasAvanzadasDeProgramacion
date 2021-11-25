@@ -1,6 +1,6 @@
 import Habitaciones.Habitacion
 import Situaciones.{MuchosMuchosDardos, NoPasaNada, TrampaDeLeones}
-import Recorrido.grupoRecorreCalabozo
+import Recorrido.{grupoRecorreCalabozo, mejorGrupo, cuantosNivelesTieneQueSubir}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers._
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
@@ -87,5 +87,85 @@ class RecorridoSpec extends AnyFreeSpec{
         aventuraFinal shouldBe a [Exito]
       }
     }
+
+    "El mismo grupo sin Julián Alvarez no pasa porque el grupo no soporta el escobazo de la suegra" - {
+      val grupo = Grupo(integrantes = List(francoArmani, laChaqueña, barrosSchelotto, pityMartinezYVaElTercero, martinezQuarta, marceloGallardo, villa, messi, ansufati, vinicius, kaka, gaspi, daniAlves, kun, kratos), cofre = List(Llave))
+      val calabozo = Calabozo(puertaPentagonoMasDuraQueLaRealidad)
+      "No pueden pasar" in {
+        val aventuraFinal = grupoRecorreCalabozo(grupo, calabozo)
+        aventuraFinal shouldBe a [Encerrados]
+      }
     }
+
+    "El mismo grupo sin Dani Alves no termina porque no pueden jubilarse" - {
+      val grupo = Grupo(integrantes = List(francoArmani, julianAlvarez, laChaqueña, barrosSchelotto, pityMartinezYVaElTercero, martinezQuarta, marceloGallardo, villa, messi, ansufati, vinicius, kaka, gaspi, kun, kratos), cofre = List(Llave))
+      val calabozo = Calabozo(puertaPentagonoMasDuraQueLaRealidad)
+      "No pueden jubilarse" in {
+        val aventuraFinal = grupoRecorreCalabozo(grupo, calabozo)
+        aventuraFinal shouldBe a [Encerrados]
+      }
+    }
+
+    "Dos grupos que compiten por saber quién es mejor" - {
+      val grupo1 = Grupo(integrantes = List(pityMartinezYVaElTercero, martinezQuarta, marceloGallardo, villa, messi, ansufati))
+      val grupo2 = Grupo(integrantes = List(francoArmani, julianAlvarez, laChaqueña, barrosSchelotto), cofre = List(Llave))
+      val calabozo = Calabozo(puertaPentagonoMasDuraQueLaRealidad)
+
+      "Sale con mejor puntaje el grupo 1" in {
+        val elMejor = mejorGrupo(List(grupo1, grupo2), calabozo)
+        elMejor shouldBe Some(grupo1)
+      }
+
+      "Si un grupo compite contra si mismo es el mejor" in {
+        val elMejor = mejorGrupo(List(grupo1), calabozo)
+        elMejor shouldBe Some(grupo1)
+      }
+
+      "Si ningun grupo compite, ningun grupo es el mejor" in {
+        val elMejor = mejorGrupo(List(), calabozo)
+        elMejor shouldBe None
+      }
+
+      "Si ahora DaniAlves es de nivel muy bajo" - {
+
+        val daniAlvesDeNivelBajo = daniAlves.copy(nivel = 1)
+
+        "Un grupo con este nuevo dani alves" - {
+          val grupo = Grupo(integrantes = List(francoArmani, julianAlvarez, laChaqueña, barrosSchelotto, pityMartinezYVaElTercero, martinezQuarta, marceloGallardo, villa, messi, ansufati, vinicius, kaka, gaspi, daniAlvesDeNivelBajo, kun, kratos), cofre = List(Llave))
+          val calabozo = Calabozo(puertaPentagonoMasDuraQueLaRealidad)
+
+          "Debe subir 6 niveles para poder jubilarse" in {
+            val niveles = cuantosNivelesTieneQueSubir(grupo, calabozo)
+            niveles shouldBe Some(6)
+          }
+        }
+
+        "Con el DaniAlves de antes no hace falta que suba de nivel" - {
+
+          val grupo = Grupo(integrantes = List(francoArmani, julianAlvarez, laChaqueña, barrosSchelotto, pityMartinezYVaElTercero, martinezQuarta, marceloGallardo, villa, messi, ansufati, vinicius, kaka, gaspi, daniAlves, kun, kratos), cofre = List(Llave))
+          val calabozo = Calabozo(puertaPentagonoMasDuraQueLaRealidad)
+
+          "No debe subir niveles" in {
+            val niveles = cuantosNivelesTieneQueSubir(grupo, calabozo)
+            niveles shouldBe Some(0)
+          }
+        }
+      
+        "Si el grupo no tiene a Dani Alves no pueden pasar ni subiendo todos los niveles del mundo" - {
+          val grupo = Grupo(integrantes = List(francoArmani, julianAlvarez, laChaqueña, barrosSchelotto, pityMartinezYVaElTercero, martinezQuarta, marceloGallardo, villa, messi, ansufati, vinicius, kaka, gaspi, kun, kratos), cofre = List(Llave))
+          val calabozo = Calabozo(puertaPentagonoMasDuraQueLaRealidad)
+          "No pueden pasar ni subir niveles" in {
+            val niveles = cuantosNivelesTieneQueSubir(grupo, calabozo)
+            niveles shouldBe None
+          }
+        }
+      }
+
+    }
+
+    
+
+
+    
+  }
 }

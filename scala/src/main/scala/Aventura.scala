@@ -8,17 +8,18 @@ object Recorrido{
 
   def proximaPuerta(recorrido: Recorrido): Option[Puerta] = {
     recorrido.grupo.lider.criterio.proximaPuerta(recorrido)
-  }
+  }  
 
-  def mejorGrupo(grupos: List[Grupo], calabozo: Calabozo): Grupo = {
+  def mejorGrupo(grupos: List[Grupo], calabozo: Calabozo): Option[Grupo] = {
+    if(grupos.isEmpty) return None
 
     val grupoDespuesDelCalabozo = (grupo: Grupo) => grupoRecorreCalabozo(grupo, calabozo).recorrido.grupo
 
     val gruposDespuesDelCalabozo = grupos.map(grupoDespuesDelCalabozo)
     val tuplasGrupos = grupos.zip(gruposDespuesDelCalabozo)
     val mejorGrupo = tuplasGrupos.maxBy(tupla => puntaje(tupla._1, tupla._2))
-    mejorGrupo._1
-  }
+    Some(mejorGrupo._1)
+  } 
 
   def abrirPuerta(recorrido: Recorrido, puerta: Puerta): Aventura = {
 
@@ -44,15 +45,12 @@ object Recorrido{
     recorrido.copy(grupo = recorrido.grupo.copy(integrantes = integrantes))
   }
 
-  def pasarPor(recorrido: Recorrido, puerta: Puerta): Aventura = {
-    val aventura = for {
-      a1 <- abrirPuerta(recorrido, puerta)
-      a2 <- intentarSalir(a1, puerta)
-      a3 <- pasarLaSituacion(a2, puerta)
-    } yield desecharALosMuertos(a3)
-
-    aventura
-  }
+  def pasarPor(recorrido: Recorrido, puerta: Puerta): Aventura = for {
+    a1 <- abrirPuerta(recorrido, puerta)
+    a2 <- intentarSalir(a1, puerta)
+    a3 <- pasarLaSituacion(a2, puerta)
+  } yield desecharALosMuertos(a3)
+  
 
   def recorrerCalabozo(aventura: Aventura): Aventura = {
     aventura match {
